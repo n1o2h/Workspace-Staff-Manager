@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Roboto:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <title>Workspace Staff Manager</title>
+</head>
+
+<body class="container-fluid">
+    <!-- HEADER -->
+    <header>
+        <nav>
+            <div class="logo-icon">
+                <i class="fa-solid fa-building"></i>
+            </div>
+            <div class="logo-content">
+                <h1>StafMap</h1>
+                <p>Organiser votre personnel par zones</p>
+            </div>
+        </nav>
+    </header>
+    <!--// HEADER //-->
+    <div>
+        <div class="row vh-100">
+            <div class="col-4 sidebar">
+                <div class="container-ajouter-emp">
+                    <div class="ajout-content">
+                        <h2><span><i class="fa-regular fa-user"></i></span> Employés non assignés</h2>
+                        <span class="nbr-employe">0</span>
+                    </div>
+                    <button type="button" class="btn btn-primary bnt-ajouter"> + Ajouter un employé</button>
+                </div>
+                <div class="container-search">
+                    <form class="d-flex">
+                        <input class="form-control me-2 search" type="search" placeholder="Rechercher par nom ou role"
+                            aria-label="Search">
+                    </form>
+                </div>
+            </div>
+            <div class="col plan-etage">
+                <div class="titre-main">
+                    <h1>Plan d'étage</h1>
+                    <p>Glissez-déposez les employés dans les zones appropriées</p>
+                </div>
+                <div class="image-etage">
+                    <!-- <div class="row h-50">
+                        <div class="col-5"></div>
+                        <div class="col-1">0</div>
+                        <div class="col-3">1</div>
+                        <div class="col-3">1</div>
+                    </div>
+                    <div class="row h-50">
+                        <div class="col-5">2</div>
+                        <div class="col-1">0</div>
+                        <div class="col-3">2</div>
+                        <div class="col-3">2</div>
+                    </div> -->
+                    <div class="div1">conferance</div>
+                    <div class="div2">reception</div>
+                    <div class="div3">vault</div>
+                    <div class="div4">staff room</div>
+                    <div class="div5">servers room</div>
+                    <div class="div6">security room</div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <!-- script Employe JS  -->
+    <script src="scripts/employeScript.js"></script>
+    <script src="https://kit.fontawesome.com/a680a19743.js" crossorigin="anonymous"></script>
+
+</body>
+
+</html>
