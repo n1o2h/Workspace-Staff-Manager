@@ -1,48 +1,89 @@
-let employes = [
-    {
-        "nom":"Nohaila Ait Hammad",
-        "role": "Devloppeur",
-        "email":"aithammadnohaila@gmail.com",
-        "photo":"../images/photo.jpg",
-        "telephone":"+212633341108",
-        "experiences":[]
+loadDataEmplyer();
+
+function loadDataEmplyer(){
+    
+    let employerList = getDataEmployersFromLocalStorageIfExist("employers");
+
+    renderCardsEmplyers(employerList);
+    
+    console.log(employerList);
+}
+
+function getDataEmployersFromLocalStorageIfExist(keyData){
+    
+    let oldData = localStorage.getItem(keyData); //all time old data be null
+
+    if(oldData == null || oldData == undefined)
+        loadDataJson("../data/employe.json");
+
+    oldData = localStorage.getItem(keyData);
+
+    return JSON.parse(oldData);
+}
+
+async function loadDataJson(file){
+    let responce = await fetch(file);
+
+    let newData = await responce.json(); 
+
+    let employerList = [];
+
+    if(newData.length == undefined){
+        // it is an object employer
+        employerList.push(newData);
+
     }
-];
-renderCardsEmplyers(employes);
+    else{
+        // new data is an array of object employer
+        newData.forEach(employer =>{
+            employerList.push(employer);
+        });
+    }
 
-function renderCardsEmplyers(employes){
-    document.getElementById("list-employe").innerHTML +=renderListEmployers(employes);
-}
-
-function renderListEmployers(employes){
-    cardListEmploye = "";
-    employes.map(employe =>{
-        cardListEmploye += renderCard(employe);
-    });
-    return cardListEmploye;
+    saveDataEmployerToLocalStorage("employers", employerList);
 }
 
-function renderCard(employe){
-    return `
-            <div class="card">
-                ${renderDetailCard(employe)}
-            </div>
-    `;
+function saveDataEmployerToLocalStorage(keyData, dataList){
+    localStorage.setItem(
+        keyData,
+        JSON.stringify(dataList));
 }
-function renderDetailCard(employe){
-    return `
-    <div class="card-body">
-                    <div class="profile">
-                        <img src=${employe.photo} alt="image profile">
-                    </div>
-                    <div class="content-profile">
-                        <h4>${employe.nom}</h4>
-                        <span>${employe.role}</span>
-                    </div>
-                    <div class="icons">
-                        <i class="fa-solid fa-pen"></i>
-                        <i class="fa-solid fa-trash"></i>
-                    </div>
-                </div>
-    `
+
+// renderCardsEmplyers(employes);
+
+function renderCardsEmplyers(employerList){
+    // document.getElementById("list-employe").innerHTML +=renderListEmployers(employerList);
 }
+
+// function renderListEmployers(employes){
+//     cardListEmploye = "";
+//     employes.map(employe =>{
+//         cardListEmploye += renderCard(employe);
+//     });
+//     return cardListEmploye;
+// }
+
+// function renderCard(employe){
+//     return `
+//             <div class="card">
+//                 ${renderDetailCard(employe)}
+//             </div>
+//     `;
+// }
+// function renderDetailCard(employe){
+//     return `
+//     <div class="card-body">
+//                     <div class="profile">
+//                         <img src=${employe.photo} alt="image profile">
+//                     </div>
+//                     <div class="content-profile">
+//                         <h4>${employe.nom}</h4>
+//                         <span>${employe.role}</span>
+//                     </div>
+//                     <div class="icons">
+//                         <i class="fa-solid fa-pen"></i>
+//                         <i class="fa-solid fa-trash"></i>
+//                     </div>
+//                 </div>
+//     `
+// }
