@@ -239,6 +239,14 @@ header nav {
     color: var(--background-3);
 }
 
+.dynamicForm{
+    background: var(--sidebar);
+    border:  1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin:20px 0;
+}
+
 @media (max-width:767px){
     .plan{
         display: grid;

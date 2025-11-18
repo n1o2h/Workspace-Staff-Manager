@@ -105,7 +105,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="selectRole" class="form-label">Role</label>
-                        <select class="form-select">
+                        <select class="form-select" id="selectRole" onchange="toggle(this)">
                             <option selected>Choisie un role</option>
                             <option value="developpeur">Développeur</option>
                             <option value="receptionniste">Réceptionniste</option>
@@ -135,24 +135,26 @@
                         <fieldset class="modal-title" id="experiences">Expériences professionnelles</fieldset>
                         <button type="button" id="ajouterExperience" class="btn btn-secondary"> + Ajouter</button>
                     </fieldset>
-                    <div id="experiencesList">
-                        <div class="mb-3">
-                            <label for="societe" class="form-label">Societé</label>
-                            <input type="text" class="form-control" id="societe" placeholder="Youcode">
-                        </div>
-                        <div class="mb-3">
-                            <label for="Role" class="form-label">Role</label>
-                            <input type="text" class="form-control" id="Role" placeholder="IT">
-                        </div>
-                        <div class="mb-3">
-                            <label for="dateDebut" class="form-label">De</label>
-                            <input type="date" class="form-control" id="dateDebut" placeholder="">
-                        </div>
-                        <div class="mb-3">
-                            <label for="dateFin" class="form-label">A</label>
-                            <input type="date" class="form-control" id="dateFin" placeholder="">
-                        </div>
-                        
+                    <div  id="experiencesListDynamicForm">
+                        <!-- <div class="dynamicForm">
+                            <div class="mb-3">
+                                <label for="societe" class="form-label">Societé</label>
+                                <input type="text" class="form-control" id="societe" placeholder="Youcode">
+                            </div>
+                            <div class="mb-3">
+                                <label for="Role" class="form-label">Role</label>
+                                <input type="text" class="form-control" id="Role" placeholder="IT">
+                            </div>
+                            <div class="mb-3">
+                                <label for="dateDebut" class="form-label">De</label>
+                                <input type="date" class="form-control" id="dateDebut" placeholder="">
+                            </div>
+                            <div class="mb-3">
+                                <label for="dateFin" class="form-label">A</label>
+                                <input type="date" class="form-control" id="dateFin" placeholder="">
+                            </div>
+                        </div> -->
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
