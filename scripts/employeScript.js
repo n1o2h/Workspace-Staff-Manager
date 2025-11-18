@@ -2,7 +2,6 @@ loadDataEmplyer();
 
 function loadDataEmplyer() {
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
-      console.log(employerList);
       renderCardsEmplyers(employerList);
 }
 
@@ -106,10 +105,7 @@ let selectrole = document.getElementById("selectRole");
 
 // fonction qui select quel option est il
 function toggle(el) {
-
       var value = el.options[el.selectedIndex].value;
-      console.log(value);
-      return value;
 }
 
 // suavgarder les information du form et l'ajout d'employe d'apres le formulaire
@@ -117,7 +113,7 @@ document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
       event.preventDefault();
 
       let form = event.target;
-
+      if(validerForm()){
       let employer = {
       nom: form.nomComplet.value,
       role: toggle(selectrole),
@@ -125,11 +121,24 @@ document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
       photo: form.photo.value,
       telephone: form.telephone.value,
       experiences: [],
-};
-// document.getElementById("ajouter").addEventListener("click", () =>{
-// })
-ajouterEmployerToLocalStorage(employer);
+      };
+      ajouterEmployerToLocalStorage(employer);
+
+      }
+      else{
+            console.log("form not valid");
+      }
+
+      
+
+
+// document.getElementById("ajouter").addEventListener("click",  ()=>{
+//       if(validerForm())
+//       ajouterEmployerToLocalStorage(employer);
+// });
+
 });
+
 
 function ajouterEmployerToLocalStorage(employer) {
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
@@ -140,7 +149,7 @@ function ajouterEmployerToLocalStorage(employer) {
 }
 
 // prévisualisation de la photo
-document.getElementById("photo").addEventListener("change", function (){
+document.getElementById("photo").addEventListener("change", function(){
       const image = this.files[0];
       console.log(image);
       const reader = new FileReader();
@@ -166,7 +175,6 @@ function employerFiltreParNomOuRole(){
             if (emp.nom.toLowerCase().includes(value) || emp.role.toLowerCase().includes(value)){
                   employersFilt.push(emp)
             }else{
-                  console.log("done");
                   let card = document.createElement("div");
                   card.innerText = `<div class="AucunEmployerExistCard">
                                     <i class="fa-regular fa-user"></i>
@@ -180,5 +188,102 @@ function employerFiltreParNomOuRole(){
       })
 }
 employerFiltreParNomOuRole()
+
+function validerForm(){
+      let form = document.forms["ajouterEmployer"];
+      // if name is empty
+      let estvalid =false;
+
+      if(form.nomComplet.value.trim() === ""){
+
+            onErrorInput(form.nomComplet, "Nom complet est vide")
+            estvalid=false;
+
+      }else if(!form.nomComplet.value.trim().match(/^[a-z]+([ \-']?[a-z]+[ \-']?[a-z]+[ \-']?)[a-z]+$/)){
+            onErrorInput(form.nomComplet, "Nom complet est non valid")
+            estvalid=false;
+      }else if(form.nomComplet.value.trim().match(/^[a-z]+([ \-']?[a-z]+[ \-']?[a-z]+[ \-']?)[a-z]+$/)){
+            onSuccessInput(form.nomComplet);
+            estvalid = true;
+      }
+
+      // email est vide
+      if(form.email.value.trim() === ""){
+            onErrorInput(form.email, "Email est vide")
+            estvalid=false;
+      }else if(!form.email.value.trim().match(/[\w.-]+@[\w-]+\.\w{3,6}/)){
+            onErrorInput(form.email, "Email est non valid")
+            estvalid=false;
+      }
+      if(form.email.value.trim().match(/[\w.-]+@[\w-]+\.\w{3,6}/)){
+            onSuccessInput(form.email);
+            estvalid = true;
+      }
+
+      // telephone est vide
+      if(form.telephone.value.trim() === ""){
+            onErrorInput(form.telephone, "Telephone est vide")
+            estvalid=false;
+      }else if(!form.telephone.value.trim().match(/^(\+{0,})(\d{0,})([(]{1}\d{1,3}[)]{0,}){0,}(\s?\d+|\+\d{2,3}\s{1}\d+|\d+){1}[\s|-]?\d+([\s|-]?\d+){1,2}(\s){0,}$/gm)){
+            onErrorInput(form.telephone, "Telephone est non valid")
+            estvalid=false;
+      }
+      /**
+       * valid formats
+            (123) 456-7890
+            (123)456-7890
+            123-456-7890
+            1234567890
+            +31636363634
+            +3(123) 123-12-12
+            +3(123)123-12-12
+            +3(123)1231212
+            +3(123) 12312123
+            +3(123) 123 12 12
+            075-63546725
+            +7910 120 54 54
+            910 120 54 54
+            8 999 999 99 99
+       */
+      if(form.telephone.value.trim().match(/^(\+{0,})(\d{0,})([(]{1}\d{1,3}[)]{0,}){0,}(\s?\d+|\+\d{2,3}\s{1}\d+|\d+){1}[\s|-]?\d+([\s|-]?\d+){1,2}(\s){0,}$/gm)){
+            onSuccessInput(form.telephone);
+            // estvalid = true;
+      }
+
+      // photo url est vide
+      if(form.photo.value.trim() === ""){
+            // onErrorInput(form.photo, "Photo est vide")
+            form.photo.value = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png";
+            estvalid=true;
+
+      }else if(!form.photo.value.trim().match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)){
+            onErrorInput(form.photo, "photo est non valid")
+            estvalid=false;
+      }else if(form.photo.value.trim().match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)){
+            onSuccessInput(form.photo);
+            estvalid = true;
+      }
+
+
+
+
+return estvalid;
+
+}
+
+function onSuccessInput(input){
+      console.log(2);
+      let parentInput = input.parentElement;
+      let messageElm = parentInput.querySelector("span");
+      messageElm.style.display ="none";
+      messageElm.innerText ="";
+}
+function onErrorInput(input, message){
+      console.log(1);
+      let parentInput = input.parentElement;
+      let messageElm = parentInput.querySelector("span");
+      messageElm.style.display ="block";
+      messageElm.innerText =message;
+}
 
 
