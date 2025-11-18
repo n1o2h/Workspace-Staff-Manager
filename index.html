@@ -42,11 +42,11 @@
                 <div class="container-search">
                     <form class="d-flex">
                         <input class="form-control me-2 search" type="search" placeholder="Rechercher par nom ou role"
-                            aria-label="Search">
+                            aria-label="Search" id="searchRoleNom">
                     </form>
                 </div>
                 <div class="list-employe" id="list-employe">
-                    <!-- <div class="card">
+                    <!-- <div class="card" id="cardemp">
                         <div class="card-body">
                             <div class="profile">
                                 <img src="images/photo.jpg" alt="image profile">
@@ -61,10 +61,15 @@
                             </div>
                         </div>
                     </div> -->
+                    <div class="AucunEmployerExistCard">
+                        <i class="fa-regular fa-user"></i>
+                        <h4>Aucun employe exist</h4>
+                    </div>
                 </div>
             </div>
             <div class="col plan-etage">
-                <div class="titre-main">
+                
+                <!-- <div class="titre-main">
                     <h1>Plan d'étage</h1>
                     <p>Glissez-déposez les employés dans les zones appropriées</p>
                 </div>
@@ -79,11 +84,10 @@
                         <div class="col">2</div>
                         <div class="col">2</div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
-
 
 
 
@@ -107,16 +111,16 @@
                         <label for="selectRole" class="form-label">Role</label>
                         <select class="form-select" id="selectRole" onchange="toggle(this)">
                             <option selected>Choisie un role</option>
-                            <option value="developpeur">Développeur</option>
-                            <option value="receptionniste">Réceptionniste</option>
-                            <option value="technicien it">Technicien IT</option>
-                            <option value="agent de securite">Agent de sécurité</option>
-                            <option value="manager">Manager</option>
-                            <option value="nettoyage">Nettoyage</option>
-                            <option value="archiviste">Archiviste</option>
-                            <option value="comptable">Comptable</option>
-                            <option value="rh">RH</option>
-                            <option value="commercial">Commercial</option>
+                            <option value="Developpeur">Développeur</option>
+                            <option value="Receptionniste">Réceptionniste</option>
+                            <option value="Technicien it">Technicien IT</option>
+                            <option value="Agent de securite">Agent de sécurité</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Nettoyage">Nettoyage</option>
+                            <option value="Archiviste">Archiviste</option>
+                            <option value="Comptable">Comptable</option>
+                            <option value="RH">RH</option>
+                            <option value="Commercial">Commercial</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -129,7 +133,9 @@
                     </div>
                     <div class="mb-3">
                         <label for="photo" class="form-label">Photo (URL)</label>
-                        <input type="file" class="form-control" id="photo" placeholder="https://example.com/photo.jpg">
+                        <input type="text" class="form-control" id="photo" placeholder="https://example.com/photo.jpg">
+                        <div id="imageArea">
+                        </div>
                     </div>
                     <fieldset class="modal-header">
                         <fieldset class="modal-title" id="experiences">Expériences professionnelles</fieldset>
@@ -159,7 +165,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                         <div class="form-group mt-4">
-                            <button type="submit" class="ajouterComptetnece btn btn-info w-100"> Ajouter
+                            <button type="submit" id="ajouter" class="ajouterComptetnece btn btn-info w-100"> Ajouter
                                 l'employe</button>
                         </div>
                     </div>
