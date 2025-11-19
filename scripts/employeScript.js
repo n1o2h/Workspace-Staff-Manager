@@ -112,11 +112,10 @@ function toggle(el) {
 }
 // suavgarder les information du form et l'ajout d'employe d'apres le formulaire
 document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
-      event.preventDefault();
 
       let form = event.target;
-      
       console.log(validerForm());
+
       if(validerForm()){
             let employer = {
             nom: form.nomComplet.value,
@@ -126,16 +125,17 @@ document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
             telephone: form.telephone.value,
             experiences: [],
             };
+            // renderCardsEmplyers([employer]);
             ajouterEmployerToLocalStorage(employer);
-            resetForm(form);
+            // resetForm(form);
             // document.getElementById("ajouter").setAttribute("data-bs-dismiss", "modal");
       }
-      else{
-            alert("Tous les champs d'emails sont pas valider");
+      else{      
+            event.preventDefault();
+            // alert("Tous les champs d'emails sont pas valider");
       }
 
 });
-
 
 function ajouterEmployerToLocalStorage(employer) {
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
@@ -146,18 +146,19 @@ function ajouterEmployerToLocalStorage(employer) {
 }
 
 // prévisualisation de la photo
-document.getElementById("photo").addEventListener("change", function(){
-      const image = this.files[0];
-      const reader = new FileReader();
-      reader.onload = () => {
-            const imgURL = reader.result;
-            const img = document.createElement("img");
-            img.classList.add("image-prof");
-            img.src = imgURL;
-            img.style.backgroundRepeat="no-repeat"
-            document.getElementById("imageArea").appendChild(img);
-      }
-      reader.readAsDataURL(image);
+document.getElementById("photo").addEventListener("blur", function(event){
+      // const image = this.files[0];
+      // const reader = new FileReader();
+      // reader.onload = () => {
+      //       const imgURL = reader.result;
+      //       const img = document.createElement("img");
+      //       img.classList.add("image-prof");
+      //       img.src = imgURL;
+      //       img.style.backgroundRepeat="no-repeat"
+      //       document.getElementById("imageArea").appendChild(img);
+      // }
+      // reader.readAsDataURL(image);
+      document.getElementById("imageArea").setAttribute("src", event.target.value);
 })
 
 // filtrage des listes par nom ou par role
@@ -186,39 +187,18 @@ function employerFiltreParNomOuRole(){
 employerFiltreParNomOuRole()
 
 function validerForm(){
+      
       let form = document.forms["ajouterEmployer"];
-//       const validationRules = {
-//       name: {
-//             regex: /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{3,}$/,
-//             errorMessage: "Invalid Name."
-//       },
-//       email: {
-//             regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-//             errorMessage: "Invalid Email."
-//       },
-//       phone: {
-//             regex: /^(\+?\d{1,3}[- ]?)?\d{9,10}$/,
-//             errorMessage: "Invalid Phone."
-//       },
-//       image: {
-//             regex: /^(https?:\/\/.*\.)/i,
-//             errorMessage: "URL d'image invalide."
-//       },
-//       role: {
-//             regex: /[a-zA-Z0-9]+/,
-//             errorMessage: "Role Obligatoire."
-//       }
-// };
 
-      let estvalid =false;
+      let estvalid = false;
       // if name is empty
 
       if(form.nomComplet.value.trim() === ""){
-
             onErrorInput(form.nomComplet, "Nom complet est vide")
-            estvalid=false;
+            estvalid = false;
 
-      }else if(!form.nomComplet.value.trim().match(/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{3,}$/)){
+      }
+      else if(!form.nomComplet.value.trim().match(/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{3,}$/)){
             onErrorInput(form.nomComplet, "Nom complet est no n valid")
             estvalid=false;
       }
@@ -231,7 +211,8 @@ function validerForm(){
       if(form.email.value.trim() === ""){
             onErrorInput(form.email, "Email est vide")
             estvalid=false;
-      }else if(!form.email.value.trim().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)){
+      }
+      else if(!form.email.value.trim().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)){
             onErrorInput(form.email, "Email est non valid")
             estvalid=false;
       }
@@ -257,11 +238,6 @@ function validerForm(){
             // onErrorInput(selectrole,"role non choisie" );
             estvalid = false;
       }
-      // else{
-      //       // onSuccessInput(toggle(selectrole));
-      //       estvalid =true;
-      // }
-
       // photo url est vide
 
       if(form.photo.value.trim() === ""){
@@ -291,6 +267,7 @@ function resetForm(form){
 }
 
 function onSuccessInput(input){
+      console.log(1)
       let parentInput = input.parentElement;
       let messageElm = parentInput.querySelector("span");
       messageElm.style.display ="none";
@@ -298,6 +275,8 @@ function onSuccessInput(input){
 }
 
 function onErrorInput(input, message){
+      console.log(2)
+
       let parentInput = input.parentElement;
       let messageElm = parentInput.querySelector("span");
       messageElm.style.display ="block";
