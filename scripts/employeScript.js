@@ -1,5 +1,4 @@
 loadDataEmplyer();
-
 function loadDataEmplyer() {
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
       renderCardsEmplyers(employerList);
@@ -77,11 +76,9 @@ return `
 ;
 
 document.getElementById("ajouterExperience").addEventListener("click", () => {
-
-      console.log(countExperience);
-
       document.getElementById("experiencesListDynamicForm").innerHTML += `
       <div class="dynamicForm">
+      <form name="dynamicForm">
             <div class="mb-3">
                   <label for="societe" class="form-label">Societé</label>
                   <input type="text" class="form-control" id="societe" placeholder="Youcode">
@@ -98,44 +95,44 @@ document.getElementById("ajouterExperience").addEventListener("click", () => {
                   <label for="dateFin" class="form-label">A</label>
                   <input type="date" class="form-control" id="dateFin" placeholder="">
             </div>
+            <div class="mb-3">
+                  <button type="button" id="ajouterExperience" class="btn btn-secondary"> + Ajouter</button>
+            </div>
+
+            </form>
       </div> `;
 });
 
+// fonction qui select quel option est il
 let selectrole = document.getElementById("selectRole");
 
-// fonction qui select quel option est il
 function toggle(el) {
       var value = el.options[el.selectedIndex].value;
+      return value;
 }
-
 // suavgarder les information du form et l'ajout d'employe d'apres le formulaire
 document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
       event.preventDefault();
 
       let form = event.target;
+      
+      console.log(validerForm());
       if(validerForm()){
-      let employer = {
-      nom: form.nomComplet.value,
-      role: toggle(selectrole),
-      email: form.email.value,
-      photo: form.photo.value,
-      telephone: form.telephone.value,
-      experiences: [],
-      };
-      ajouterEmployerToLocalStorage(employer);
-
+            let employer = {
+            nom: form.nomComplet.value,
+            role: toggle(selectrole),
+            email: form.email.value,
+            photo: form.photo.value,
+            telephone: form.telephone.value,
+            experiences: [],
+            };
+            ajouterEmployerToLocalStorage(employer);
+            resetForm(form);
+            // document.getElementById("ajouter").setAttribute("data-bs-dismiss", "modal");
       }
       else{
-            console.log("form not valid");
+            alert("Tous les champs d'emails sont pas valider");
       }
-
-      
-
-
-// document.getElementById("ajouter").addEventListener("click",  ()=>{
-//       if(validerForm())
-//       ajouterEmployerToLocalStorage(employer);
-// });
 
 });
 
@@ -151,7 +148,6 @@ function ajouterEmployerToLocalStorage(employer) {
 // prévisualisation de la photo
 document.getElementById("photo").addEventListener("change", function(){
       const image = this.files[0];
-      console.log(image);
       const reader = new FileReader();
       reader.onload = () => {
             const imgURL = reader.result;
@@ -191,18 +187,42 @@ employerFiltreParNomOuRole()
 
 function validerForm(){
       let form = document.forms["ajouterEmployer"];
-      // if name is empty
+//       const validationRules = {
+//       name: {
+//             regex: /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{3,}$/,
+//             errorMessage: "Invalid Name."
+//       },
+//       email: {
+//             regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+//             errorMessage: "Invalid Email."
+//       },
+//       phone: {
+//             regex: /^(\+?\d{1,3}[- ]?)?\d{9,10}$/,
+//             errorMessage: "Invalid Phone."
+//       },
+//       image: {
+//             regex: /^(https?:\/\/.*\.)/i,
+//             errorMessage: "URL d'image invalide."
+//       },
+//       role: {
+//             regex: /[a-zA-Z0-9]+/,
+//             errorMessage: "Role Obligatoire."
+//       }
+// };
+
       let estvalid =false;
+      // if name is empty
 
       if(form.nomComplet.value.trim() === ""){
 
             onErrorInput(form.nomComplet, "Nom complet est vide")
             estvalid=false;
 
-      }else if(!form.nomComplet.value.trim().match(/^[a-z]+([ \-']?[a-z]+[ \-']?[a-z]+[ \-']?)[a-z]+$/)){
-            onErrorInput(form.nomComplet, "Nom complet est non valid")
+      }else if(!form.nomComplet.value.trim().match(/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{3,}$/)){
+            onErrorInput(form.nomComplet, "Nom complet est no n valid")
             estvalid=false;
-      }else if(form.nomComplet.value.trim().match(/^[a-z]+([ \-']?[a-z]+[ \-']?[a-z]+[ \-']?)[a-z]+$/)){
+      }
+      if(form.nomComplet.value.trim().match(/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{3,}$/)){
             onSuccessInput(form.nomComplet);
             estvalid = true;
       }
@@ -211,11 +231,11 @@ function validerForm(){
       if(form.email.value.trim() === ""){
             onErrorInput(form.email, "Email est vide")
             estvalid=false;
-      }else if(!form.email.value.trim().match(/[\w.-]+@[\w-]+\.\w{3,6}/)){
+      }else if(!form.email.value.trim().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)){
             onErrorInput(form.email, "Email est non valid")
             estvalid=false;
       }
-      if(form.email.value.trim().match(/[\w.-]+@[\w-]+\.\w{3,6}/)){
+      if(form.email.value.trim().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)){
             onSuccessInput(form.email);
             estvalid = true;
       }
@@ -224,66 +244,63 @@ function validerForm(){
       if(form.telephone.value.trim() === ""){
             onErrorInput(form.telephone, "Telephone est vide")
             estvalid=false;
-      }else if(!form.telephone.value.trim().match(/^(\+{0,})(\d{0,})([(]{1}\d{1,3}[)]{0,}){0,}(\s?\d+|\+\d{2,3}\s{1}\d+|\d+){1}[\s|-]?\d+([\s|-]?\d+){1,2}(\s){0,}$/gm)){
+      }else if(!form.telephone.value.trim().match(/^(\+?\d{1,3}[- ]?)?\d{9,10}$/)){
             onErrorInput(form.telephone, "Telephone est non valid")
             estvalid=false;
       }
-      /**
-       * valid formats
-            (123) 456-7890
-            (123)456-7890
-            123-456-7890
-            1234567890
-            +31636363634
-            +3(123) 123-12-12
-            +3(123)123-12-12
-            +3(123)1231212
-            +3(123) 12312123
-            +3(123) 123 12 12
-            075-63546725
-            +7910 120 54 54
-            910 120 54 54
-            8 999 999 99 99
-       */
-      if(form.telephone.value.trim().match(/^(\+{0,})(\d{0,})([(]{1}\d{1,3}[)]{0,}){0,}(\s?\d+|\+\d{2,3}\s{1}\d+|\d+){1}[\s|-]?\d+([\s|-]?\d+){1,2}(\s){0,}$/gm)){
+      if(form.telephone.value.trim().match(/^(\+?\d{1,3}[- ]?)?\d{9,10}$/)){
             onSuccessInput(form.telephone);
-            // estvalid = true;
+            estvalid = true;
       }
+      // role est non choisie
+      if(!toggle(selectrole).match(/[a-zA-Z0-9]+/)){
+            // onErrorInput(selectrole,"role non choisie" );
+            estvalid = false;
+      }
+      // else{
+      //       // onSuccessInput(toggle(selectrole));
+      //       estvalid =true;
+      // }
 
       // photo url est vide
+
       if(form.photo.value.trim() === ""){
             // onErrorInput(form.photo, "Photo est vide")
             form.photo.value = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png";
-            estvalid=true;
-
-      }else if(!form.photo.value.trim().match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)){
-            onErrorInput(form.photo, "photo est non valid")
+            // estvalid=true;
+      }else if(!form.photo.value.trim().match(/(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?/)){
+            onErrorInput(form.photo, "phot est non valid")
             estvalid=false;
-      }else if(form.photo.value.trim().match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/)){
+      }
+      if(form.photo.value.trim().match(/(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?/)){
             onSuccessInput(form.photo);
-            estvalid = true;
+            // estvalid = true;
       }
 
-
-
-
 return estvalid;
+}
 
+function resetForm(form){
+
+      form.nomComplet.value ="";
+      // console.log(form.nomCompl)
+      form.email.value ="";
+      // form.selectRole=""
+      form.telephone.value ="";
+      form.photo.value = "";
 }
 
 function onSuccessInput(input){
-      console.log(2);
       let parentInput = input.parentElement;
       let messageElm = parentInput.querySelector("span");
       messageElm.style.display ="none";
       messageElm.innerText ="";
 }
+
 function onErrorInput(input, message){
-      console.log(1);
       let parentInput = input.parentElement;
       let messageElm = parentInput.querySelector("span");
       messageElm.style.display ="block";
       messageElm.innerText =message;
 }
-
 

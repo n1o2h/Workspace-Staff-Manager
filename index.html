@@ -111,8 +111,8 @@
                         <label for="selectRole" class="form-label">Role</label>
                         <span></span>
                         <select class="form-select" id="selectRole" onchange="toggle(this)">
-                            <option selected>Choisie un role</option>
-                            <option value="Developpeur">Développeur</option>
+                            <!-- <option selected>Choisie un role</option> -->
+                            <option value="Developpeur" selected >Développeur</option>
                             <option value="Receptionniste">Réceptionniste</option>
                             <option value="Technicien it">Technicien IT</option>
                             <option value="Agent de securite">Agent de sécurité</option>
@@ -167,11 +167,13 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                        <div class="form-group mt-4">
-                            <button type="submit" id="ajouter" class="ajouterComptetnece btn btn-info w-100"> Ajouter
+                        <button type="submit" id="ajouter" class="ajouterComptetnece hideBnt btn btn-info w-100"> Ajouter
                                 l'employe</button>
-                        </div>
+                        <button type="reset"  class="btn btn-secondary w-100" data-bs-dismiss="modal">Annuler</button>
+                        
+                        <!-- <div class="form-group mt-4">
+                            
+                        </div> -->
                     </div>
                 </form>
 
@@ -191,6 +193,68 @@
     <!-- script Employe JS  -->
     <script src="scripts/employeScript.js"></script>
     <script src="https://kit.fontawesome.com/a680a19743.js" crossorigin="anonymous"></script>
+
+<!-- 
+
+    function validationForm() {
+    const validationRules = {
+        name: {
+            regex: /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{3,}$/,
+            errorMessage: "Invalid Name."
+        },
+        email: {
+            regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+            errorMessage: "Invalid Email."
+        },
+        phone: {
+            regex: /^(\+?\d{1,3}[- ]?)?\d{9,10}$/,
+            errorMessage: "Invalid Phone."
+        },
+        image: {
+            regex: /^(https?:\/\/.*\.)/i,
+            errorMessage: "URL d'image invalide."
+        },
+        role: {
+            regex: /[a-zA-Z0-9]+/,
+            errorMessage: "Role Obligatoire."
+        },
+
+    };
+
+
+    let formValid = true;
+
+    myInputs.forEach(input => {
+        if (validationRules[input.name]) {
+            let value = input.value.trim();
+            let regex = validationRules[input.name].regex;
+            const errorSpan = document.querySelectorAll(`span.${input.name}`);
+
+            input.style.border = "";
+            errorSpan.innerHTML = "";
+
+            if (value === "" || (input.tagName === "SELECT" && value === "")) {
+                input.style.border = "3px solid orange";
+                errorSpan.innerText = "champ vide";
+                errorSpan.style.color = 'orange';
+                formValid = false;
+            }
+            else if (!value.match(regex)) {
+                input.style.border = "3px solid red";
+                errorSpan.innerText = validationRules[input.name].errorMessage;
+                errorSpan.style.color = 'red';
+                formValid = false;
+            }
+            else {
+                input.style.border = "3px solid green";
+                errorSpan.innerText = "";
+            }
+        }
+        // console.log(input, formValid);
+    });
+
+    return formValid;
+} -->
 
 </body>
 
