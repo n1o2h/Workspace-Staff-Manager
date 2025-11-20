@@ -46,21 +46,6 @@
                     </form>
                 </div>
                 <div class="list-employe" id="list-employe">
-                    <!-- <div class="card" id="cardemp">
-                        <div class="card-body">
-                            <div class="profile">
-                                <img src="images/photo.jpg" alt="image profile">
-                            </div>
-                            <div class="content-profile">
-                                <h4>noha</h4>
-                                <span>developpeur</span>
-                            </div>
-                            <div class="icons">
-                                <i class="fa-solid fa-pen"></i>
-                                <i class="fa-solid fa-trash"></i>
-                            </div>
-                        </div>
-                    </div> -->
                     <div class="AucunEmployerExistCard">
                         <i class="fa-regular fa-user"></i>
                         <h4>Aucun employe exist</h4>
@@ -69,7 +54,7 @@
             </div>
             <div class="col plan-etage">
                 
-                <!-- <div class="titre-main">
+                <div class="titre-main">
                     <h1>Plan d'étage</h1>
                     <p>Glissez-déposez les employés dans les zones appropriées</p>
                 </div>
@@ -84,7 +69,7 @@
                         <div class="col">2</div>
                         <div class="col">2</div>
                     </div>
-                </div> -->
+                </div>
             </div>
         </div>
     </div>
@@ -104,7 +89,8 @@
                 <form class="modal-body" name="ajouterEmployer" action="">
                     <div class="mb-3">
                         <label for="nomComplet" class="form-label">Nom complet</label>
-                        <input type="text" class="form-control" id="nomComplet" name="nomComplet" placeholder="Nohaila Ait Hammad">
+                        <input type="text" class="form-control" id="nomComplet" name="nomComplet"
+                            placeholder="Nohaila Ait Hammad">
                         <span></span>
                     </div>
                     <div class="mb-3">
@@ -112,7 +98,7 @@
                         <span></span>
                         <select class="form-select" name="selectRole" id="selectRole" onchange="toggle(this)">
                             <!-- <option selected>Choisie un role</option> -->
-                            <option value="Developpeur" selected >Développeur</option>
+                            <option value="Developpeur" selected>Développeur</option>
                             <option value="Receptionniste">Réceptionniste</option>
                             <option value="Technicien it">Technicien IT</option>
                             <option value="Agent de securite">Agent de sécurité</option>
@@ -131,26 +117,100 @@
                     </div>
                     <div class="mb-3">
                         <label for="telephone" class="form-label">Télephone</label>
-                        <input type="text" class="form-control" id="telephone" name="telephone" placeholder="+212600000000">
+                        <input type="text" class="form-control" id="telephone" name="telephone"
+                            placeholder="+212600000000">
                         <span></span>
                     </div>
                     <div class="mb-3">
                         <label for="photo" class="form-label">Photo (URL)</label>
-                        <input type="text" class="form-control" id="photo" name="photo" placeholder="https://example.com/photo.jpg">
+                        <input type="text" class="form-control" id="photo" name="photo"
+                            placeholder="https://example.com/photo.jpg">
                         <span></span>
-                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png" id="imageArea">
-                        
+                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
+                            id="imageArea">
+
                     </div>
                     <fieldset class="modal-header">
                         <fieldset class="modal-title" id="experiences">Expériences professionnelles</fieldset>
                         <button type="button" id="ajouterExperience" class="btn btn-secondary"> + Ajouter</button>
                     </fieldset>
-                    <div  id="experiencesListDynamicForm">
+                    <div id="experiencesListDynamicForm">
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" id="ajouter" class="ajouterComptetnece hideBnt btn btn-info w-100"> Ajouter
-                                l'employe</button>
-                        <button type="reset"  class="btn btn-secondary w-100" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" id="ajouter" class="ajouterComptetnece hideBnt btn btn-info w-100">
+                            Ajouter
+                            l'employe</button>
+                        <button type="reset" class="btn btn-secondary w-100" data-bs-dismiss="modal">Annuler</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- card de profile detailler -->
+    <div class="modal fade" id="" tabindex="-1" aria-labelledby="ajoutModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <fieldset class="modal-header">
+                    <fieldset class="modal-title" id="exampleModalLabel">Ajouter un nouvel employé</fieldset>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </fieldset>
+                <form class="modal-body" name="editEmp" action="">
+                    <div class="mb-3">
+                        <label for="nomComplet" class="form-label">Nom complet</label>
+                        <input type="text" class="form-control" id="nomComplet" name="nomComplet"
+                            placeholder="Nohaila Ait Hammad">
+                        <span></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="selectRole" class="form-label">Role</label>
+                        <span></span>
+                        <select class="form-select" name="selectRole" id="selectRole" onchange="toggle(this)">
+                            <!-- <option selected>Choisie un role</option> -->
+                            <option value="Developpeur" selected>Développeur</option>
+                            <option value="Receptionniste">Réceptionniste</option>
+                            <option value="Technicien it">Technicien IT</option>
+                            <option value="Agent de securite">Agent de sécurité</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Nettoyage">Nettoyage</option>
+                            <option value="Archiviste">Archiviste</option>
+                            <option value="Comptable">Comptable</option>
+                            <option value="RH">RH</option>
+                            <option value="Commercial">Commercial</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+                        <span></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="telephone" class="form-label">Télephone</label>
+                        <input type="text" class="form-control" id="telephone" name="telephone"
+                            placeholder="+212600000000">
+                        <span></span>
+                    </div>
+                    <div class="mb-3">
+                        <label for="photo" class="form-label">Photo (URL)</label>
+                        <input type="text" class="form-control" id="photo" name="photo"
+                            placeholder="https://example.com/photo.jpg">
+                        <span></span>
+                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
+                            id="imageArea">
+
+                    </div>
+                    <fieldset class="modal-header">
+                        <fieldset class="modal-title" id="experiences">Expériences professionnelles</fieldset>
+                        <button type="button" id="ajouterExperience" class="btn btn-secondary"> + Ajouter</button>
+                    </fieldset>
+                    <div id="experiencesListDynamicForm">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="ajouter" class="ajouterComptetnece hideBnt btn btn-info w-100">
+                            Ajouter
+                            l'employe</button>
+                        <button type="reset" class="btn btn-secondary w-100" data-bs-dismiss="modal">Annuler</button>
                     </div>
                 </form>
 
@@ -168,6 +228,7 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
     <!-- script Employe JS  -->
+    
     <script src="scripts/employeScript.js"></script>
     <script src="https://kit.fontawesome.com/a680a19743.js" crossorigin="anonymous"></script>
 </body>
