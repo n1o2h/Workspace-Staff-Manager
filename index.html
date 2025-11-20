@@ -30,7 +30,7 @@
     <!--// HEADER //-->
     <div>
         <div class="plan row  vh-100">
-            <div class="  col-lg-4 col-lg col-md sidebar sdbar">
+            <div class=" col-12 col-md-5 col-lg-4 sidebar sdbar">
                 <div class="container-ajouter-emp">
                     <div class="ajout-content">
                         <h2><span><i class="fa-regular fa-user"></i></span> Employés non assignés</h2>
@@ -52,25 +52,107 @@
                     </div>
                 </div>
             </div>
-            <div class="col plan-etage">
-                
-                <div class="titre-main">
-                    <h1>Plan d'étage</h1>
-                    <p>Glissez-déposez les employés dans les zones appropriées</p>
-                </div>
-                <div class="image-etage">
-                    <div class="row h-50 bg-primary">
-                        <div class="col">1</div>
-                        <div class="col">1</div>
-                        <div class="col">1</div>
+            <div class=" col container my-4">
+
+                <h3 class="mb-4">Plan d'étage</h3>
+                <p class="text-muted">Glissez-déposez les employés dans les zones appropriées</p>
+
+                <div class="row g-4">
+
+                    <!-- Salle de conférence -->
+                    <div class="col-12 col-md-12 col-lg-6 p-4">
+                        <div class="room-card p-3 rounded border" style="background: #e0fbeb;">
+                            <h5 class="fw-bold">Salle de conférence</h5>
+                            <span class="badge bg-light text-dark">0/10</span>
+
+                            <div class="text-center mt-3">
+                                <p class="text-muted">Aucun</p>
+
+                            </div>
+
+                            <button class="btn btn-outline-success w-100 mt-3">+ Assigner</button>
+                        </div>
                     </div>
-                    <div class="row h-50 bg-secondary">
-                        <div class="col">2</div>
-                        <div class="col">2</div>
-                        <div class="col">2</div>
+
+                    <!-- Réception -->
+                    <div class=" col-12 col-md-12 col-lg-6 p-4">
+                        <div class="room-card p-3 rounded border" style="background: #fce6e7;">
+                            <h5 class="fw-bold">Réception</h5>
+                            <span class="badge bg-light text-dark">0/2</span>
+
+
+
+                            <div class="text-center mt-3">
+
+                                <p class="text-muted">Aucun</p>
+                            </div>
+
+                            <button class="btn btn-outline-danger w-100 mt-3">+ Assigner</button>
+                        </div>
                     </div>
+
+                    <!-- Salle des serveurs -->
+                    <div class="col-12 col-md-12 col-lg-6 p-4">
+                        <div class="room-card p-3 rounded border" style="background: #fce6e7">
+                            <h5 class="fw-bold">Salle des serveurs</h5>
+                            <span class="badge bg-light text-dark">0/3</span>
+
+
+                            <div class="text-center mt-3">
+
+                                <p class="text-muted">Aucun</p>
+                            </div>
+
+                            <button class="btn btn-outline-danger w-100 mt-3">+ Assigner</button>
+                        </div>
+                    </div>
+
+                    <!-- Salle de sécurité -->
+                    <div class="col-12 col-md-12 col-lg-6 p-4">
+                        <div class="room-card p-3 rounded border " style="background: #fce6e7">
+                            <h5 class="fw-bold">Salle de sécurité</h5>
+                            <span class="badge bg-light text-dark">0/4</span>
+
+
+                            <div class="text-center mt-3">
+
+                                <p class="text-muted">Aucun</p>
+                            </div>
+
+                            <button class="btn btn-outline-danger w-100 mt-3">+ Assigner</button>
+                        </div>
+                    </div>
+
+                    <!-- Salle du personnel -->
+                    <div class="col-12 col-md-12 col-lg-6 p-4">
+                        <div class="room-card p-3 rounded border" style="background: #e0fbeb">
+                            <h5 class="fw-bold">Salle du personnel</h5>
+                            <span class="badge bg-light text-dark">0/15</span>
+
+                            <div class="text-center mt-3">
+                                <p class="text-muted">Aucun</p>
+                            </div>
+
+                            <button class="btn btn-outline-success w-100 mt-3">+ Assigner</button>
+                        </div>
+                    </div>
+
+                    <!-- Salle d’archives -->
+                    <div class="col-12 col-md-12 col-lg-6 p-4">
+                        <div class="room-card p-3 rounded border" style="background: #fce6e7">
+                            <h5 class="fw-bold">Salle d'archives</h5>
+                            <span class="badge bg-light text-dark">0/2</span>
+
+                            <div class="text-center mt-3">
+                                <p class="text-muted">Aucun</p>
+                            </div>
+                            <button class="btn btn-outline-danger w-100 mt-3">+ Assigner</button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -228,7 +310,7 @@
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
     <!-- script Employe JS  -->
-    
+
     <script src="scripts/employeScript.js"></script>
     <script src="https://kit.fontawesome.com/a680a19743.js" crossorigin="anonymous"></script>
 </body>
