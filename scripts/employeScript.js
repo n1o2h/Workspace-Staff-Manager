@@ -1,4 +1,5 @@
 loadDataEmplyer();
+
 function loadDataEmplyer() {
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
       renderCardsEmplyers(employerList);
@@ -40,23 +41,26 @@ function renderCardsEmplyers(employerList) {
 
 function renderListEmployers(employes) {
       cardListEmploye = "";
-      employes.map((employe) => {
-      cardListEmploye += renderCard(employe);
+      employes.map((employe, index) => {
+      cardListEmploye += renderCard(employe, index);
       });
       return cardListEmploye;
 }
 
-function renderCard(employe) {
+// data-bs-toggle="modal"  data-bs-target="#afficherProfile"
+function renderCard(employe, index) {
+      tmp=index;
       return `
             <div class="card">
-            ${renderDetailCard(employe)}
+            ${renderDetailCard(employe, index)}
             </div>
       `;
 }
+// 
 
-function renderDetailCard(employe) {
+function renderDetailCard(employe, index) {
 return `
-      <div class="card-body">
+      <div class="card-body" >
             <div class="profile">
                   <img src=${employe.photo} alt="image profile">
             </div>
@@ -65,12 +69,75 @@ return `
                   <span>${employe.role}</span>
             </div>
             <div class="icons">
-                  <i class="fa-solid fa-pen"></i>
-                  <i class="fa-solid fa-trash"></i>
+                  <i class="fa-solid fa-pen"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editEmployerModal"
+                  onclick="editEmployer(${index})"></i>
+
+                  <i class="fa-solid fa-trash" onclick="supprimerEmployer(${index})"
+                  ></i>
             </div>
       </div>
       `;
 }
+
+function supprimerEmployer(index){
+      // console.log(index);
+      let employerList = getDataEmployersFromLocalStorageIfExist("employers");
+      employerList.splice(index, 1);
+      saveDataEmployerToLocalStorage("employers", employerList);
+      renderCardsEmplyers(employerList);
+}
+
+
+// function editEmployer(index) {
+//       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
+//       console.log(employerList[index]);
+//       form = document.forms["ajouterEmployer"];
+//       form.nomComplet.value =employerList[index].nom;
+//       form.email.value =employerList[index].email;
+//       form.telephone.value =employerList[index].telephone;
+//       form.photo.value =employerList[index].photo;
+//       // form..value =employerList[index].role;
+
+//       console.log(employerList[index].nom);
+//       // console.log(form.email.value);
+//       // console.log(form.telephone.value);
+//       // console.log(form.role.value);
+//       // console.log(form.photo.value);
+
+// }
+function editEmployer(index) {
+      let list = getDataEmployersFromLocalStorageIfExist("employers");
+      let emp = list[index];
+
+      let form = document.forms["editEmp"];
+
+      form.id.value = index;
+      form.editNomComplet.value = emp.nom;
+      form.editEmail.value = emp.email;
+      form.editTelephone.value = emp.telephone;
+      form.editPhoto.value = emp.photo;
+      form.editRole.value = emp.role;
+      document.getElementById("editImagePreview").src = emp.photo;
+}
+
+document.forms["editEmp"].addEventListener("submit", event =>{
+      
+      event.preventDefault();
+      let form = event.target;
+      idempEdit = form.id.value;
+      let list = getDataEmployersFromLocalStorageIfExist("employers");
+      empEditer = list[idempEdit];
+      empEditer.nom = form.editNomComplet.value;
+      empEditer.email = form.editEmail.value;
+      empEditer.telephone = form.editTelephone.value;
+      // empEditer.photo = form.editPhoto.value;
+      console.log(empEditer);
+      list[idempEdit] = empEditer;
+      saveDataEmployerToLocalStorage("employers", list);
+      renderCardsEmplyers(list);
+})
 
 // fonction qui select quel option est il
 let selectrole = document.getElementById("selectRole");
@@ -94,25 +161,25 @@ function addExperience() {
 
             <div class="mb-3">
                   <label class="form-label">Société</label>
-                  <input type="text" class="form-control" name="societe[]" placeholder="Youcode">
+                  <input type="text" class="form-control" name="societe" placeholder="Youcode">
                   <span class="error"></span>
             </div>
 
             <div class="mb-3">
                   <label class="form-label">Role</label>
-                  <input type="text" class="form-control" name="Role[]" placeholder="IT">
+                  <input type="text" class="form-control" name="Role" placeholder="IT">
                   <span class="error"></span>
             </div>
 
             <div class="mb-3">
                   <label class="form-label">De</label>
-                  <input type="date" class="form-control" name="dateDebut[]">
+                  <input type="date" class="form-control" name="dateDebut">
                   <span class="error"></span>
             </div>
 
             <div class="mb-3">
                   <label class="form-label">A</label>
-                  <input type="date" class="form-control" name="dateFin[]">
+                  <input type="date" class="form-control" name="dateFin">
                   <span class="error"></span>
             </div>
 
@@ -146,9 +213,9 @@ function attachRealTimeValidation() {
                   validateField(input);
             });
       });
-      }
+}
 
-      function validateField(input) {
+function validateField(input) {
       if (input.value.trim() === "") {
             onErrorInput(input, "Ce champ est obligatoire");
             return false;
@@ -156,13 +223,15 @@ function attachRealTimeValidation() {
             onSuccessInput(input);
             return true;
       }
-      }
+}
 
 // sauvgardement deu formulaire apres la verification reel de chaque champ en utilisant l'evenement blur
 
-      document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
+document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
 
       let form = event.target;
+            // event.preventDefault();
+
 
       if (validerForm()) {
 
@@ -175,11 +244,12 @@ function attachRealTimeValidation() {
                   experiences: []
             };
 
+
             // Récupérer les expériences dynamiques
-            let societes = form["societe[]"];
-            let roles = form["Role[]"];
-            let datesDebut = form["dateDebut[]"];
-            let datesFin = form["dateFin[]"];
+            let societes = form.societe;
+            let roles = form.Role;
+            let datesDebut = form;
+            let datesFin = form.dateFin;
 
             if (societes) {
                   for (let i = 0; i < societes.length; i++) {
@@ -191,11 +261,11 @@ function attachRealTimeValidation() {
                   });
                   }
             }
-
             // Sauvegarder
             ajouterEmployerToLocalStorage(employer);
 
-      } else {
+      } 
+      else {
             event.preventDefault();
       }
       });
@@ -206,24 +276,8 @@ function ajouterEmployerToLocalStorage(employer) {
       employerList.push(employer);
       saveDataEmployerToLocalStorage("employers", employerList);
       // data katb9a kol mra t3awd tloda o ywli overriding o ila mdrthach kykhs nrefrecher la page
-      loadDataEmplyer();
+      // loadDataEmplyer();
 }
-
-// // prévisualisation de la photo
-// document.getElementById("photo").addEventListener("blur", function(event){
-//       // const image = this.files[0];
-//       // const reader = new FileReader();
-//       // reader.onload = () => {
-//       //       const imgURL = reader.result;
-//       //       const img = document.createElement("img");
-//       //       img.classList.add("image-prof");
-//       //       img.src = imgURL;
-//       //       img.style.backgroundRepeat="no-repeat"
-//       //       document.getElementById("imageArea").appendChild(img);
-//       // }
-//       // reader.readAsDataURL(image);
-//       document.getElementById("imageArea").setAttribute("src", event.target.value);
-// })
 
 // Prévisualisation de la photo en temps réel
 document.getElementById("photo").addEventListener("input", function(event) {
@@ -382,7 +436,7 @@ function validerForm() {
 // }
 
 function onSuccessInput(input){
-      console.log(1)
+      // console.log(1)
       let parentInput = input.parentElement;
       let messageElm = parentInput.querySelector("span");
       messageElm.style.display ="none";
@@ -390,10 +444,9 @@ function onSuccessInput(input){
 }
 
 function onErrorInput(input, message){
-      console.log(2)
+      // console.log(2)
       let parentInput = input.parentElement;
       let messageElm = parentInput.querySelector("span");
       messageElm.style.display ="block";
       messageElm.innerText =message;
 }
-
