@@ -72,37 +72,6 @@ return `
       `;
 }
 
-// ajout du dynamic form for experiences
-;
-
-document.getElementById("ajouterExperience").addEventListener("click", () => {
-      document.getElementById("experiencesListDynamicForm").innerHTML += `
-      <div class="dynamicForm">
-      <form name="dynamicForm">
-            <div class="mb-3">
-                  <label for="societe" class="form-label">Societé</label>
-                  <input type="text" class="form-control" id="societe" placeholder="Youcode">
-            </div>
-            <div class="mb-3">
-                  <label for="Role" class="form-label">Role</label>
-                  <input type="text" class="form-control" id="Role" placeholder="IT">
-            </div>
-            <div class="mb-3">
-                  <label for="dateDebut" class="form-label">De</label>
-                  <input type="date" class="form-control" id="dateDebut" placeholder="">
-            </div>
-            <div class="mb-3">
-                  <label for="dateFin" class="form-label">A</label>
-                  <input type="date" class="form-control" id="dateFin" placeholder="">
-            </div>
-            <div class="mb-3">
-                  <button type="button" id="ajouterExperience" class="btn btn-secondary"> + Ajouter</button>
-            </div>
-
-            </form>
-      </div> `;
-});
-
 // fonction qui select quel option est il
 let selectrole = document.getElementById("selectRole");
 
@@ -110,32 +79,127 @@ function toggle(el) {
       var value = el.options[el.selectedIndex].value;
       return value;
 }
-// suavgarder les information du form et l'ajout d'employe d'apres le formulaire
-document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
+
+// ajout du forulaire dynamic des experiencs
+
+document.getElementById("ajouterExperience").addEventListener("click", () => {
+      addExperience();
+});
+
+function addExperience() {
+      const container = document.getElementById("experiencesListDynamicForm");
+
+      container.insertAdjacentHTML("beforeend", `
+      <div class="dynamicForm border rounded p-2 mb-3">
+
+            <div class="mb-3">
+                  <label class="form-label">Société</label>
+                  <input type="text" class="form-control" name="societe[]" placeholder="Youcode">
+                  <span class="error"></span>
+            </div>
+
+            <div class="mb-3">
+                  <label class="form-label">Role</label>
+                  <input type="text" class="form-control" name="Role[]" placeholder="IT">
+                  <span class="error"></span>
+            </div>
+
+            <div class="mb-3">
+                  <label class="form-label">De</label>
+                  <input type="date" class="form-control" name="dateDebut[]">
+                  <span class="error"></span>
+            </div>
+
+            <div class="mb-3">
+                  <label class="form-label">A</label>
+                  <input type="date" class="form-control" name="dateFin[]">
+                  <span class="error"></span>
+            </div>
+
+            <div class="mb-3 d-flex gap-2">
+                  <button type="button" class="btn btn-secondary w-100 ajouterExperienceInterne"> + Ajouter </button>
+                  <button type="button" class="btn btn-danger w-100 supprimerExperience">Supprimer</button>
+            </div>
+
+      </div>
+      `);
+      attachRealTimeValidation();
+}
+
+// Gérer les boutons internes ajouter et supprimer
+document.getElementById("experiencesListDynamicForm").addEventListener("click", (e) => {
+
+      // Ajouter une nouvelle expérience
+      if (e.target.classList.contains("ajouterExperienceInterne")) {
+            addExperience();
+      }
+
+      // Supprimer ce bloc d'expérience
+      if (e.target.classList.contains("supprimerExperience")) {
+            e.target.closest(".dynamicForm").remove();
+      }
+});
+
+function attachRealTimeValidation() {
+      document.querySelectorAll(".dynamicForm input").forEach(input => {
+            input.addEventListener("blur", () => {
+                  validateField(input);
+            });
+      });
+      }
+
+      function validateField(input) {
+      if (input.value.trim() === "") {
+            onErrorInput(input, "Ce champ est obligatoire");
+            return false;
+      } else {
+            onSuccessInput(input);
+            return true;
+      }
+      }
+
+// sauvgardement deu formulaire apres la verification reel de chaque champ en utilisant l'evenement blur
+
+      document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
 
       let form = event.target;
-      console.log(validerForm());
 
-      if(validerForm()){
+      if (validerForm()) {
+
             let employer = {
-            nom: form.nomComplet.value,
-            role: toggle(selectrole),
-            email: form.email.value,
-            photo: form.photo.value,
-            telephone: form.telephone.value,
-            experiences: [],
+                  nom: form.nomComplet.value,
+                  role: toggle(selectrole),
+                  email: form.email.value,
+                  photo: form.photo.value,
+                  telephone: form.telephone.value,
+                  experiences: []
             };
-            // renderCardsEmplyers([employer]);
-            ajouterEmployerToLocalStorage(employer);
-            // resetForm(form);
-            // document.getElementById("ajouter").setAttribute("data-bs-dismiss", "modal");
-      }
-      else{      
-            event.preventDefault();
-            // alert("Tous les champs d'emails sont pas valider");
-      }
 
-});
+            // Récupérer les expériences dynamiques
+            let societes = form["societe[]"];
+            let roles = form["Role[]"];
+            let datesDebut = form["dateDebut[]"];
+            let datesFin = form["dateFin[]"];
+
+            if (societes) {
+                  for (let i = 0; i < societes.length; i++) {
+                  employer.experiences.push({
+                        societe: societes[i].value,
+                        Role: roles[i].value,
+                        dateDebut: datesDebut[i].value,
+                        dateFin: datesFin[i].value
+                  });
+                  }
+            }
+
+            // Sauvegarder
+            ajouterEmployerToLocalStorage(employer);
+
+      } else {
+            event.preventDefault();
+      }
+      });
+
 
 function ajouterEmployerToLocalStorage(employer) {
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
@@ -145,21 +209,33 @@ function ajouterEmployerToLocalStorage(employer) {
       loadDataEmplyer();
 }
 
-// prévisualisation de la photo
-document.getElementById("photo").addEventListener("blur", function(event){
-      // const image = this.files[0];
-      // const reader = new FileReader();
-      // reader.onload = () => {
-      //       const imgURL = reader.result;
-      //       const img = document.createElement("img");
-      //       img.classList.add("image-prof");
-      //       img.src = imgURL;
-      //       img.style.backgroundRepeat="no-repeat"
-      //       document.getElementById("imageArea").appendChild(img);
-      // }
-      // reader.readAsDataURL(image);
-      document.getElementById("imageArea").setAttribute("src", event.target.value);
-})
+// // prévisualisation de la photo
+// document.getElementById("photo").addEventListener("blur", function(event){
+//       // const image = this.files[0];
+//       // const reader = new FileReader();
+//       // reader.onload = () => {
+//       //       const imgURL = reader.result;
+//       //       const img = document.createElement("img");
+//       //       img.classList.add("image-prof");
+//       //       img.src = imgURL;
+//       //       img.style.backgroundRepeat="no-repeat"
+//       //       document.getElementById("imageArea").appendChild(img);
+//       // }
+//       // reader.readAsDataURL(image);
+//       document.getElementById("imageArea").setAttribute("src", event.target.value);
+// })
+
+// Prévisualisation de la photo en temps réel
+document.getElementById("photo").addEventListener("input", function(event) {
+      const url = event.target.value.trim();
+      const imageArea = document.getElementById("imageArea");
+      if(url){
+            imageArea.setAttribute("src", url);
+      } else {
+            // Image par défaut si le champ est vide
+            imageArea.setAttribute("src", "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");
+      }
+      });
 
 // filtrage des listes par nom ou par role
 
@@ -186,85 +262,124 @@ function employerFiltreParNomOuRole(){
 }
 employerFiltreParNomOuRole()
 
-function validerForm(){
-      
+function validerForm() {
       let form = document.forms["ajouterEmployer"];
+      let estvalid = true;
 
-      let estvalid = false;
-      // if name is empty
-
-      if(form.nomComplet.value.trim() === ""){
-            onErrorInput(form.nomComplet, "Nom complet est vide")
+      // ===== VALIDATION NOM ===== //
+      if (!form.nomComplet.value.trim().match(/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{3,}$/)) {
+            onErrorInput(form.nomComplet, "Nom complet non valide");
             estvalid = false;
-
-      }
-      else if(!form.nomComplet.value.trim().match(/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{3,}$/)){
-            onErrorInput(form.nomComplet, "Nom complet est no n valid")
-            estvalid=false;
-      }
-      if(form.nomComplet.value.trim().match(/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{3,}$/)){
+      } else {
             onSuccessInput(form.nomComplet);
-            estvalid = true;
       }
 
-      // email est vide
-      if(form.email.value.trim() === ""){
-            onErrorInput(form.email, "Email est vide")
-            estvalid=false;
-      }
-      else if(!form.email.value.trim().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)){
-            onErrorInput(form.email, "Email est non valid")
-            estvalid=false;
-      }
-      if(form.email.value.trim().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)){
+      // ===== VALIDATION EMAIL ===== //
+      if (!form.email.value.trim().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+            onErrorInput(form.email, "Email non valide");
+            estvalid = false;
+      } else {
             onSuccessInput(form.email);
-            estvalid = true;
       }
 
-      // telephone est vide
-      if(form.telephone.value.trim() === ""){
-            onErrorInput(form.telephone, "Telephone est vide")
-            estvalid=false;
-      }else if(!form.telephone.value.trim().match(/^(\+?\d{1,3}[- ]?)?\d{9,10}$/)){
-            onErrorInput(form.telephone, "Telephone est non valid")
-            estvalid=false;
-      }
-      if(form.telephone.value.trim().match(/^(\+?\d{1,3}[- ]?)?\d{9,10}$/)){
+      // ===== VALIDATION TELEPHONE ===== //
+      if (!form.telephone.value.trim().match(/^(\+?\d{1,3}[- ]?)?\d{9,10}$/)) {
+            onErrorInput(form.telephone, "Téléphone non valide");
+            estvalid = false;
+      } else {
             onSuccessInput(form.telephone);
-            estvalid = true;
       }
-      // role est non choisie
-      if(!toggle(selectrole).match(/[a-zA-Z0-9]+/)){
-            // onErrorInput(selectrole,"role non choisie" );
+
+      // ===== VALIDATION ROLE ===== //
+      if (!toggle(selectrole).match(/[a-zA-Z0-9]+/)) {
             estvalid = false;
       }
-      // photo url est vide
 
-      if(form.photo.value.trim() === ""){
-            // onErrorInput(form.photo, "Photo est vide")
-            form.photo.value = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png";
-            // estvalid=true;
-      }else if(!form.photo.value.trim().match(/(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?/)){
-            onErrorInput(form.photo, "phot est non valid")
-            estvalid=false;
-      }
-      if(form.photo.value.trim().match(/(https:\/\/www\.|http:\/\/www\.|https:\/\/|http:\/\/)?[a-zA-Z0-9]{2,}(\.[a-zA-Z0-9]{2,})(\.[a-zA-Z0-9]{2,})?/)){
+      // ===== VALIDATION PHOTO ===== //
+      let photo = form.photo.value.trim();
+      if (photo === "") {
+            form.photo.value =
+                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png";
+      } else if (!photo.match(/^https?:\/\/.+/)) {
+            onErrorInput(form.photo, "URL de photo invalide");
+            estvalid = false;
+      } else {
             onSuccessInput(form.photo);
-            // estvalid = true;
       }
 
-return estvalid;
-}
 
-function resetForm(form){
+      //VALIDATION DES EXPERIENCES DYNAMIQUES
 
-      form.nomComplet.value ="";
-      // console.log(form.nomCompl)
-      form.email.value ="";
-      // form.selectRole=""
-      form.telephone.value ="";
-      form.photo.value = "";
-}
+      let societes = form["societe[]"];
+      let roles = form["Role[]"];
+      let datesDebut = form["dateDebut[]"];
+      let datesFin = form["dateFin[]"];
+
+      // Aucun bloc d'expérience 
+      if (!societes) return estvalid;
+
+      // Si une seule expérience on la transformer en tableau pour uniformité
+      if (!societes.length) {
+            societes = [societes];
+            roles = [roles];
+            datesDebut = [datesDebut];
+            datesFin = [datesFin];
+      }
+
+      for (let i = 0; i < societes.length; i++) {
+
+            // === Société ===
+            if (societes[i].value.trim() === "") {
+                  onErrorInput(societes[i], "Société obligatoire");
+                  estvalid = false;
+            } else {
+                  onSuccessInput(societes[i]);
+            }
+
+            // === Role ===
+            if (roles[i].value.trim() === "") {
+                  onErrorInput(roles[i], "Rôle obligatoire");
+                  estvalid = false;
+            } else {
+                  onSuccessInput(roles[i]);
+            }
+
+            // === Dates ===
+            if (datesDebut[i].value === "") {
+                  onErrorInput(datesDebut[i], "Date début obligatoire");
+                  estvalid = false;
+            } else {
+                  onSuccessInput(datesDebut[i]);
+            }
+
+            if (datesFin[i].value === "") {
+                  onErrorInput(datesFin[i], "Date fin obligatoire");
+                  estvalid = false;
+            } else {
+                  onSuccessInput(datesFin[i]);
+            }
+
+            // === Date cohérente ===
+            if (datesDebut[i].value && datesFin[i].value) {
+                  if (new Date(datesDebut[i].value) > new Date(datesFin[i].value)) {
+                  onErrorInput(datesFin[i], "La date de fin doit être ≥ date début");
+                  estvalid = false;
+                  }
+            }
+      }
+
+      return estvalid;
+      }
+
+// function resetForm(form){
+
+//       form.nomComplet.value ="";
+//       // console.log(form.nomCompl)
+//       form.email.value ="";
+//       // form.selectRole=""
+//       form.telephone.value ="";
+//       form.photo.value = "";
+// }
 
 function onSuccessInput(input){
       console.log(1)
@@ -276,7 +391,6 @@ function onSuccessInput(input){
 
 function onErrorInput(input, message){
       console.log(2)
-
       let parentInput = input.parentElement;
       let messageElm = parentInput.querySelector("span");
       messageElm.style.display ="block";

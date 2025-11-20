@@ -104,13 +104,13 @@
                 <form class="modal-body" name="ajouterEmployer" action="">
                     <div class="mb-3">
                         <label for="nomComplet" class="form-label">Nom complet</label>
-                        <input type="text" class="form-control" id="nomComplet" placeholder="Nohaila Ait Hammad">
+                        <input type="text" class="form-control" id="nomComplet" name="nomComplet" placeholder="Nohaila Ait Hammad">
                         <span></span>
                     </div>
                     <div class="mb-3">
                         <label for="selectRole" class="form-label">Role</label>
                         <span></span>
-                        <select class="form-select" id="selectRole" onchange="toggle(this)">
+                        <select class="form-select" name="selectRole" id="selectRole" onchange="toggle(this)">
                             <!-- <option selected>Choisie un role</option> -->
                             <option value="Developpeur" selected >Développeur</option>
                             <option value="Receptionniste">Réceptionniste</option>
@@ -126,17 +126,17 @@
                     </div>
                     <div class="mb-3">
                         <label for="email" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
                         <span></span>
                     </div>
                     <div class="mb-3">
                         <label for="telephone" class="form-label">Télephone</label>
-                        <input type="text" class="form-control" id="telephone" placeholder="+212600000000">
+                        <input type="text" class="form-control" id="telephone" name="telephone" placeholder="+212600000000">
                         <span></span>
                     </div>
                     <div class="mb-3">
                         <label for="photo" class="form-label">Photo (URL)</label>
-                        <input type="text" class="form-control" id="photo" placeholder="https://example.com/photo.jpg">
+                        <input type="text" class="form-control" id="photo" name="photo" placeholder="https://example.com/photo.jpg">
                         <span></span>
                         <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png" id="imageArea">
                         
@@ -146,34 +146,11 @@
                         <button type="button" id="ajouterExperience" class="btn btn-secondary"> + Ajouter</button>
                     </fieldset>
                     <div  id="experiencesListDynamicForm">
-                        <!-- <div class="dynamicForm">
-                            <div class="mb-3">
-                                <label for="societe" class="form-label">Societé</label>
-                                <input type="text" class="form-control" id="societe" placeholder="Youcode">
-                            </div>
-                            <div class="mb-3">
-                                <label for="Role" class="form-label">Role</label>
-                                <input type="text" class="form-control" id="Role" placeholder="IT">
-                            </div>
-                            <div class="mb-3">
-                                <label for="dateDebut" class="form-label">De</label>
-                                <input type="date" class="form-control" id="dateDebut" placeholder="">
-                            </div>
-                            <div class="mb-3">
-                                <label for="dateFin" class="form-label">A</label>
-                                <input type="date" class="form-control" id="dateFin" placeholder="">
-                            </div>
-                        </div> -->
-
                     </div>
                     <div class="modal-footer">
                         <button type="submit" id="ajouter" class="ajouterComptetnece hideBnt btn btn-info w-100"> Ajouter
                                 l'employe</button>
                         <button type="reset"  class="btn btn-secondary w-100" data-bs-dismiss="modal">Annuler</button>
-                        
-                        <!-- <div class="form-group mt-4">
-                            
-                        </div> -->
                     </div>
                 </form>
 
@@ -193,69 +170,6 @@
     <!-- script Employe JS  -->
     <script src="scripts/employeScript.js"></script>
     <script src="https://kit.fontawesome.com/a680a19743.js" crossorigin="anonymous"></script>
-
-<!-- 
-
-    function validationForm() {
-    const validationRules = {
-        name: {
-            regex: /^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{3,}$/,
-            errorMessage: "Invalid Name."
-        },
-        email: {
-            regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-            errorMessage: "Invalid Email."
-        },
-        phone: {
-            regex: /^(\+?\d{1,3}[- ]?)?\d{9,10}$/,
-            errorMessage: "Invalid Phone."
-        },
-        image: {
-            regex: /^(https?:\/\/.*\.)/i,
-            errorMessage: "URL d'image invalide."
-        },
-        role: {
-            regex: /[a-zA-Z0-9]+/,
-            errorMessage: "Role Obligatoire."
-        },
-
-    };
-
-
-    let formValid = true;
-
-    myInputs.forEach(input => {
-        if (validationRules[input.name]) {
-            let value = input.value.trim();
-            let regex = validationRules[input.name].regex;
-            const errorSpan = document.querySelectorAll(`span.${input.name}`);
-
-            input.style.border = "";
-            errorSpan.innerHTML = "";
-
-            if (value === "" || (input.tagName === "SELECT" && value === "")) {
-                input.style.border = "3px solid orange";
-                errorSpan.innerText = "champ vide";
-                errorSpan.style.color = 'orange';
-                formValid = false;
-            }
-            else if (!value.match(regex)) {
-                input.style.border = "3px solid red";
-                errorSpan.innerText = validationRules[input.name].errorMessage;
-                errorSpan.style.color = 'red';
-                formValid = false;
-            }
-            else {
-                input.style.border = "3px solid green";
-                errorSpan.innerText = "";
-            }
-        }
-        // console.log(input, formValid);
-    });
-
-    return formValid;
-} -->
-
 </body>
 
 </html>
