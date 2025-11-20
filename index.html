@@ -231,7 +231,8 @@
     </div>
 
     <!-- card de profile detailler -->
-    <div class="modal fade" id="" tabindex="-1" aria-labelledby="ajoutModal" aria-hidden="true">
+    <!-- 
+    
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <fieldset class="modal-header">
@@ -249,7 +250,7 @@
                         <label for="selectRole" class="form-label">Role</label>
                         <span></span>
                         <select class="form-select" name="selectRole" id="selectRole" onchange="toggle(this)">
-                            <!-- <option selected>Choisie un role</option> -->
+                            <option selected>Choisie un role</option>
                             <option value="Developpeur" selected>Développeur</option>
                             <option value="Receptionniste">Réceptionniste</option>
                             <option value="Technicien it">Technicien IT</option>
@@ -298,7 +299,68 @@
 
             </div>
         </div>
+    </div> -->
+
+    <div class="modal fade" id="editEmployerModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+
+            <fieldset class="modal-header">
+                <fieldset class="modal-title">Modifier l'employé</fieldset>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </fieldset>
+
+            <form class="modal-body" name="editEmp">
+
+                <input type="hidden" name="id">
+
+                <div class="mb-3">
+                    <label class="form-label">Nom complet</label>
+                    <input type="text" class="form-control" name="editNomComplet">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Rôle</label>
+                    <select class="form-select" name="editRole">
+                        <option value="Developpeur">Développeur</option>
+                        <option value="Receptionniste">Réceptionniste</option>
+                        <option value="Technicien it">Technicien IT</option>
+                        <option value="Agent de securite">Agent de sécurité</option>
+                        <option value="Manager">Manager</option>
+                        <option value="Nettoyage">Nettoyage</option>
+                        <option value="Archiviste">Archiviste</option>
+                        <option value="Comptable">Comptable</option>
+                        <option value="RH">RH</option>
+                        <option value="Commercial">Commercial</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" name="editEmail">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Téléphone</label>
+                    <input type="text" class="form-control" name="editTelephone">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Photo (URL)</label>
+                    <input type="text" class="form-control" name="editPhoto">
+                    <img src="" id="editImagePreview" class="mt-2" width="80">
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-info w-100" data-bs-dismiss="modal">Sauvegarder</button>
+                    <button type="reset" class="btn btn-secondary w-100" data-bs-dismiss="modal">Annuler</button>
+                </div>
+
+            </form>
+
+        </div>
     </div>
+</div>
 
 
 

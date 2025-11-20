@@ -1,6 +1,5 @@
 loadDataEmplyer();
 
-
 function loadDataEmplyer() {
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
       renderCardsEmplyers(employerList);
@@ -70,8 +69,13 @@ return `
                   <span>${employe.role}</span>
             </div>
             <div class="icons">
-                  <i class="fa-solid fa-pen" onclick="editEmployer(${index})" ></i>
-                  <i class="fa-solid fa-trash" onclick="supprimerEmployer(${index})" ></i>
+                  <i class="fa-solid fa-pen"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editEmployerModal"
+                  onclick="editEmployer(${index})"></i>
+
+                  <i class="fa-solid fa-trash" onclick="supprimerEmployer(${index})"
+                  ></i>
             </div>
       </div>
       `;
@@ -85,10 +89,55 @@ function supprimerEmployer(index){
       renderCardsEmplyers(employerList);
 }
 
+
+// function editEmployer(index) {
+//       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
+//       console.log(employerList[index]);
+//       form = document.forms["ajouterEmployer"];
+//       form.nomComplet.value =employerList[index].nom;
+//       form.email.value =employerList[index].email;
+//       form.telephone.value =employerList[index].telephone;
+//       form.photo.value =employerList[index].photo;
+//       // form..value =employerList[index].role;
+
+//       console.log(employerList[index].nom);
+//       // console.log(form.email.value);
+//       // console.log(form.telephone.value);
+//       // console.log(form.role.value);
+//       // console.log(form.photo.value);
+
+// }
 function editEmployer(index) {
-      let employerList = getDataEmployersFromLocalStorageIfExist("employers");
-      console.log(employerList[index]);
+      let list = getDataEmployersFromLocalStorageIfExist("employers");
+      let emp = list[index];
+
+      let form = document.forms["editEmp"];
+
+      form.id.value = index;
+      form.editNomComplet.value = emp.nom;
+      form.editEmail.value = emp.email;
+      form.editTelephone.value = emp.telephone;
+      form.editPhoto.value = emp.photo;
+      form.editRole.value = emp.role;
+      document.getElementById("editImagePreview").src = emp.photo;
 }
+
+document.forms["editEmp"].addEventListener("submit", event =>{
+      
+      event.preventDefault();
+      let form = event.target;
+      idempEdit = form.id.value;
+      let list = getDataEmployersFromLocalStorageIfExist("employers");
+      empEditer = list[idempEdit];
+      empEditer.nom = form.editNomComplet.value;
+      empEditer.email = form.editEmail.value;
+      empEditer.telephone = form.editTelephone.value;
+      // empEditer.photo = form.editPhoto.value;
+      console.log(empEditer);
+      list[idempEdit] = empEditer;
+      saveDataEmployerToLocalStorage("employers", list);
+      renderCardsEmplyers(list);
+})
 
 // fonction qui select quel option est il
 let selectrole = document.getElementById("selectRole");
@@ -164,7 +213,7 @@ function attachRealTimeValidation() {
                   validateField(input);
             });
       });
-      }
+}
 
 function validateField(input) {
       if (input.value.trim() === "") {
@@ -174,7 +223,7 @@ function validateField(input) {
             onSuccessInput(input);
             return true;
       }
-      }
+}
 
 // sauvgardement deu formulaire apres la verification reel de chaque champ en utilisant l'evenement blur
 
