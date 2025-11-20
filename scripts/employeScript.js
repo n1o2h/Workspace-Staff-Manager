@@ -49,9 +49,8 @@ function renderListEmployers(employes) {
 
 // data-bs-toggle="modal"  data-bs-target="#afficherProfile"
 function renderCard(employe, index) {
-      tmp=index;
       return `
-            <div class="card">
+            <div class="card" data-bs-toggle="modal" data-bs-target="#profileDetailler" onclick="detialProfile(${index})">
             ${renderDetailCard(employe, index)}
             </div>
       `;
@@ -89,24 +88,6 @@ function supprimerEmployer(index){
       renderCardsEmplyers(employerList);
 }
 
-
-// function editEmployer(index) {
-//       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
-//       console.log(employerList[index]);
-//       form = document.forms["ajouterEmployer"];
-//       form.nomComplet.value =employerList[index].nom;
-//       form.email.value =employerList[index].email;
-//       form.telephone.value =employerList[index].telephone;
-//       form.photo.value =employerList[index].photo;
-//       // form..value =employerList[index].role;
-
-//       console.log(employerList[index].nom);
-//       // console.log(form.email.value);
-//       // console.log(form.telephone.value);
-//       // console.log(form.role.value);
-//       // console.log(form.photo.value);
-
-// }
 function editEmployer(index) {
       let list = getDataEmployersFromLocalStorageIfExist("employers");
       let emp = list[index];
@@ -190,11 +171,14 @@ function addExperience() {
 
       </div>
       `);
+      console.log(11);
+
       attachRealTimeValidation();
 }
 
 // Gérer les boutons internes ajouter et supprimer
 document.getElementById("experiencesListDynamicForm").addEventListener("click", (e) => {
+      console.log(11);
 
       // Ajouter une nouvelle expérience
       if (e.target.classList.contains("ajouterExperienceInterne")) {
@@ -209,6 +193,8 @@ document.getElementById("experiencesListDynamicForm").addEventListener("click", 
 
 function attachRealTimeValidation() {
       document.querySelectorAll(".dynamicForm input").forEach(input => {
+      console.log(11);
+
             input.addEventListener("blur", () => {
                   validateField(input);
             });
@@ -216,6 +202,8 @@ function attachRealTimeValidation() {
 }
 
 function validateField(input) {
+      console.log(11);
+
       if (input.value.trim() === "") {
             onErrorInput(input, "Ce champ est obligatoire");
             return false;
@@ -450,3 +438,83 @@ function onErrorInput(input, message){
       messageElm.style.display ="block";
       messageElm.innerText =message;
 }
+
+// ajouter detial profile
+function detialProfile(index){
+      let list = getDataEmployersFromLocalStorageIfExist("employers");
+      let emp = list[index];
+      let cardDetail = "";
+      document.getElementById("detailInfo").innerHTML = `
+            <!-- Header -->
+            <div class="position-relative">
+
+            <!-- Gradient Header -->
+                  <div class="rounded-top" style="height: 150px; background: linear-gradient(135deg, #1D4ED8, #7C3AED);"></div>
+
+            <!-- Profile Image -->
+                  <div class="text-center" style="margin-top: -60px;">
+                        <img src=${emp.photo} 
+                        alt="photo profile" 
+                        class="rounded-circle border border-white shadow" 
+                        style="width: 120px; height: 120px; object-fit: cover;">
+                  </div>
+
+            <!-- Name & Role -->
+                  <div class="text-center mt-2 mb-4">
+                        <h4 class="text-dark">${emp.nom}</h4>
+                        <p class="text-primary mb-0">${emp.role}</p>
+                  </div>
+            </div>
+
+            <!-- Content -->
+            <div class="modal-body">
+
+            <!-- Contact Info -->
+            <h5>Informations de contact</h5>
+            <div class="mb-3">
+            <p class="mb-1"><i class="bi bi-envelope-fill text-primary"></i> 
+                  <a href="#" class="text-decoration-none text-primary">${emp.email}</a>
+            </p>
+            <p class="mb-1"><i class="bi bi-telephone-fill text-primary"></i> 
+                  <a href="#" class="text-decoration-none text-primary">${emp.telephone}</a>
+            </p>
+            </div>
+
+            <!-- Experiences -->
+            <h5 class="mt-4">Expériences professionnelles</h5>
+            <div class="row g-3">
+            <div class="col-12">
+                  <div class="p-3 bg-light border rounded">
+                  <p class="mb-1 fw-semibold">${emp.experiences.societe}</p>
+                  <p class="mb-1 text-muted small">${emp.experiences.Role}</p>
+                  <p class="mb-0 text-muted small">Janvier 2024 - Juin 2025</p>
+                  </div>
+            </div>
+            <div class="col-12">
+                  <div class="p-3 bg-light border rounded">
+                  <p class="mb-1 fw-semibold">Chef de projet</p>
+                  <p class="mb-1 text-muted small">Arena Connect</p>
+                  <p class="mb-0 text-muted small">Juillet 2025 - Aujourd'hui</p>
+                  </div>
+            </div>
+            </div>
+
+            </div>
+      </div>
+      
+      
+      `
+
+      console.log(emp);
+
+}
+
+// <div class="card">
+//                   <div class="card-body d-flex flex-column mb-3">
+//                   <img src=${emp.photo} atr="imageprofile" style="width: 100px; height: 100px; border-radius: 50%; "/>
+//                   <div class="p-4">
+//                     <h2> ${emp.nom}</h2>
+//                     <h3 class="text-primary">${emp.role}</h3>
+//                 </div>
+//             </div>
+//             </div>
