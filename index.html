@@ -63,14 +63,13 @@
                     <div class="col-12 col-md-12 col-lg-6 p-4">
                         <div class="room-card p-3 rounded border" style="background: #e0fbeb;">
                             <h5 class="fw-bold">Salle de conférence</h5>
-                            <span class="badge bg-light text-dark">0/10</span>
+                            <span id="nbrConferance"> </span>
 
-                            <div class="text-center mt-3">
+                            <div class="text-center mt-3" id="salleConference">
                                 <p class="text-muted">Aucun</p>
-
                             </div>
 
-                            <button class="btn btn-outline-success w-100 mt-3">+ Assigner</button>
+                            <button class="btn btn-outline-success w-100 mt-3" id="conferenceBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">+ Assigner</button>
                         </div>
                     </div>
 
@@ -78,16 +77,16 @@
                     <div class=" col-12 col-md-12 col-lg-6 p-4">
                         <div class="room-card p-3 rounded border" style="background: #fce6e7;">
                             <h5 class="fw-bold">Réception</h5>
-                            <span class="badge bg-light text-dark">0/2</span>
+                            <span id="nbrReception"> </span>
 
 
 
-                            <div class="text-center mt-3">
+                            <div class="text-center mt-3" id="salleReception">
 
                                 <p class="text-muted">Aucun</p>
                             </div>
 
-                            <button class="btn btn-outline-danger w-100 mt-3">+ Assigner</button>
+                            <button class="btn btn-outline-danger w-100 mt-3"  id="receptionBtn" data-bs-toggle="modal" data-bs-target="#exampleModal" >+ Assigner</button>
                         </div>
                     </div>
 
@@ -95,15 +94,15 @@
                     <div class="col-12 col-md-12 col-lg-6 p-4">
                         <div class="room-card p-3 rounded border" style="background: #fce6e7">
                             <h5 class="fw-bold">Salle des serveurs</h5>
-                            <span class="badge bg-light text-dark">0/3</span>
+                            <span id="nbrServeurs"> </span>
 
 
-                            <div class="text-center mt-3">
+                            <div class="text-center mt-3 ii" id="salleServeurs">
 
                                 <p class="text-muted">Aucun</p>
                             </div>
 
-                            <button class="btn btn-outline-danger w-100 mt-3">+ Assigner</button>
+                            <button class="btn btn-outline-danger w-100 mt-3" id="serveursBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">+ Assigner</button>
                         </div>
                     </div>
 
@@ -111,15 +110,15 @@
                     <div class="col-12 col-md-12 col-lg-6 p-4">
                         <div class="room-card p-3 rounded border " style="background: #fce6e7">
                             <h5 class="fw-bold">Salle de sécurité</h5>
-                            <span class="badge bg-light text-dark">0/4</span>
+                            <span id="nbrSecurite"> </span>
 
 
-                            <div class="text-center mt-3">
+                            <div class="text-center mt-3" id="salleSecurite">
 
                                 <p class="text-muted">Aucun</p>
                             </div>
 
-                            <button class="btn btn-outline-danger w-100 mt-3">+ Assigner</button>
+                            <button class="btn btn-outline-danger w-100 mt-3"  id="securiteBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">+ Assigner</button>
                         </div>
                     </div>
 
@@ -129,11 +128,11 @@
                             <h5 class="fw-bold">Salle du personnel</h5>
                             <span class="badge bg-light text-dark">0/15</span>
 
-                            <div class="text-center mt-3">
+                            <div class="text-center mt-3" id="sallePersonnel">
                                 <p class="text-muted">Aucun</p>
                             </div>
 
-                            <button class="btn btn-outline-success w-100 mt-3">+ Assigner</button>
+                            <button class="btn btn-outline-success w-100 mt-3" id="personnelBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">+ Assigner</button>
                         </div>
                     </div>
 
@@ -143,10 +142,11 @@
                             <h5 class="fw-bold">Salle d'archives</h5>
                             <span class="badge bg-light text-dark">0/2</span>
 
-                            <div class="text-center mt-3">
+                            <div class="text-center mt-3" id="salleArchive">
                                 <p class="text-muted">Aucun</p>
                             </div>
-                            <button class="btn btn-outline-danger w-100 mt-3">+ Assigner</button>
+                            
+                            <button class="btn btn-outline-danger w-100 mt-3" id="archiveBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">+ Assigner</button>
                         </div>
                     </div>
 
@@ -156,6 +156,30 @@
         </div>
     </div>
 
+    <!-- modal de listes des employer -->
+    <!-- Button trigger modal -->
+    <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Launch demo modal
+    </button> -->
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="sdBar">
+            
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary"> +Assigner </button>
+        </div>
+        </div>
+    </div>
+    </div>
 
 
 
@@ -178,7 +202,7 @@
                     <div class="mb-3">
                         <label for="selectRole" class="form-label">Role</label>
                         <span></span>
-                        <select class="form-select" name="selectRole" id="selectRole" onchange="toggle(this)">
+                        <select class="form-select" name="selectRole" id="selectRole" onchange="getSelectedValue(this)">
                             <!-- <option selected>Choisie un role</option> -->
                             <option value="Developpeur" selected>Développeur</option>
                             <option value="Receptionniste">Réceptionniste</option>
@@ -361,6 +385,25 @@
         </div>
     </div>
 </div>
+
+<!-- profile detailler -->
+    <div class="modal fade" id="profileDetailler" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Profile Détiallé </h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body " id="detailInfo">
+            
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Fermer</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
 
 
 
