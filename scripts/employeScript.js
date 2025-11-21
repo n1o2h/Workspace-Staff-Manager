@@ -5,11 +5,10 @@ function loadDataEmplyer() {
       renderCardsEmplyers(employerList,"list-employe");
 }
 
-async function getDataEmployersFromLocalStorageIfExist(keyData) {
+function getDataEmployersFromLocalStorageIfExist(keyData) {
       let oldData = localStorage.getItem(keyData); //all time old data be null
       if (oldData == null || oldData == undefined){
-            const data = await loadDataJson("../data/employe.json");
-            localStorage.setItem(keyData, JSON.stringify(data));
+            loadDataJson("./data/employe.json");
             oldData = localStorage.getItem(keyData);
       }
       return JSON.parse(oldData);
@@ -673,7 +672,7 @@ function remplirToutesZonesExemple() {
             <span class="badge bg-light text-dark"><span id="nbrReception" >${reception.length}</span>/${zoneCapacities.reception}</span>`
             renderCardsEmplyers(reception, "salleReception")
       });
-
+      
       document.getElementById("serveursBtn").addEventListener("click", renderCardsEmplyers(salleServeurs, "salleServeurs"))
       document.getElementById("securiteBtn").addEventListener("click", renderCardsEmplyers(salleSecurite, "salleSecurite"))
       document.getElementById("personnelBtn").addEventListener("click", renderCardsEmplyers(sallePersonnel, "sallePersonnel"))
