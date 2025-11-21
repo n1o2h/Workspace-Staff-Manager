@@ -8,7 +8,7 @@ function loadDataEmplyer() {
 function getDataEmployersFromLocalStorageIfExist(keyData) {
       let oldData = localStorage.getItem(keyData); //all time old data be null
       if (oldData == null || oldData == undefined){
-            loadDataJson("../data/employe.json");
+            loadDataJson("./data/employe.json");
             oldData = localStorage.getItem(keyData);
       }
       return JSON.parse(oldData);
