@@ -2,7 +2,7 @@ loadDataEmplyer();
 
 function loadDataEmplyer() {
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
-      renderCardsEmplyers(employerList);
+      renderCardsEmplyers(employerList,"list-employe");
 }
 
 function getDataEmployersFromLocalStorageIfExist(keyData) {
@@ -35,8 +35,8 @@ function saveDataEmployerToLocalStorage(keyData, dataList) {
 }
 
 // renderCardsEmplyers(employes);
-function renderCardsEmplyers(employerList) {
-      document.getElementById("list-employe").innerHTML =
+function renderCardsEmplyers(employerList, nom) {
+      document.getElementById(nom).innerHTML =
       renderListEmployers(employerList);
 
       employerFiltreParNomOuRole()
@@ -51,6 +51,7 @@ function renderCardsEmplyers(employerList) {
       });
 }
 
+
 function renderListEmployers(employes) {
       let cardListEmploye = "";
       employes.map((employe, index) => {
@@ -62,7 +63,7 @@ function renderListEmployers(employes) {
 // data-bs-toggle="modal"  data-bs-target="#afficherProfile"
 function renderCard(employe, index) {
       return `
-            <div class="card employeeCard" data-index="${index}" data-bs-toggle="modal" data-bs-target="#profileDetailler" onclick="detialProfile(${index})">
+            <div class="card employeeCard" data-index="${index}" >
             ${renderDetailCard(employe, index)}
             </div>
       `;
@@ -74,7 +75,7 @@ function renderCard(employe, index) {
 function renderDetailCard(employe, index) {
 return `
       <div class="card-body" >
-            <div class="profile">
+            <div class="profile" data-bs-toggle="modal" data-bs-target="#profileDetailler" onclick="detialProfile(${index})">
                   <img src=${employe.photo} alt="image profile">
             </div>
             <div class="content-profile">
@@ -99,7 +100,7 @@ function supprimerEmployer(index){
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
       employerList.splice(index, 1);
       saveDataEmployerToLocalStorage("employers", employerList);
-      renderCardsEmplyers(employerList);
+      renderCardsEmplyers(employerList, "list-employe");
 }
 
 function editEmployer(index) {
@@ -454,15 +455,15 @@ function validerForm() {
       return estvalid;
       }
 
-// function resetForm(form){
+function resetForm(form){
 
-//       form.nomComplet.value ="";
-//       // console.log(form.nomCompl)
-//       form.email.value ="";
-//       // form.selectRole=""
-//       form.telephone.value ="";
-//       form.photo.value = "";
-// }
+      form.nomComplet.value ="";
+      // console.log(form.nomCompl)
+      form.email.value ="";
+      // form.selectRole=""
+      form.telephone.value ="";
+      form.photo.value = "";
+}
 
 function onSuccessInput(input){
       // console.log(1)
@@ -545,12 +546,149 @@ function detialProfile(index){
 
 }
 
-// <div class="card">
-//                   <div class="card-body d-flex flex-column mb-3">
-//                   <img src=${emp.photo} atr="imageprofile" style="width: 100px; height: 100px; border-radius: 50%; "/>
-//                   <div class="p-4">
-//                     <h2> ${emp.nom}</h2>
-//                     <h3 class="text-primary">${emp.role}</h3>
-//                 </div>
-//             </div>
-//             </div>
+// les regles metiers
+const zoneRules = {
+      reception: ["Receptionniste", "Manager", "Nettoyage"],
+      salleServeurs: ["Technici, en it", "Manager", "Nettoyage"],
+      salleSecurite: ["Agent de securite", "Manager", "Nettoyage"],
+      salleConference: ["Manager", "Receptionniste", "Technicien IT", "Agent de securite", "Nettoyage", "Devloppeur", "Comptable", "RH", "Commercial"],
+      sallePersonnel: ["Manager", "Receptionniste", "Technicien IT", "Agent de securite", "Nettoyage", "Devloppeur", "Comptable", "RH", "Commercial"],
+      salleArchives: ["Manager", "Receptionniste", "Technicien IT", "Agent de securite", "Devloppeur", "Comptable", "RH", "Commercial"]  
+};
+
+let reception = [];
+let salleServeurs = [];
+let salleSecurite = [];
+let salleConference = [];
+let sallePersonnel = [];
+let salleArchives = [];
+
+const zoneCapacities = {
+      reception: 2,
+      salleServeurs: 3,
+      salleSecurite: 4,
+      salleConference: 5,
+      sallePersonnel: 5,
+      salleArchives: 2
+};
+
+
+function assignerEmployeAZone(emp, zoneName) {
+  // Vérifier si l’employé est éligible
+      if (!zoneRules[zoneName].includes(emp.role) && emp.role !== "Manager") {
+      console.log(`${emp.nom} (${emp.role}) ne peut pas être assigné à ${zoneName}`);
+      return false;
+      }
+
+      // Ajouter à la zone correspondante
+      switch(zoneName) {
+      case "reception":
+            if(reception.length < zoneCapacities[zoneName]){
+                  reception.push(emp);                  
+            }
+            else {
+            console.log(`${zoneName} est pleine !`);
+      }
+            break;
+      case "salleServeurs":
+            if(salleServeurs.length < zoneCapacities[zoneName])
+                  salleServeurs.push(emp);
+            else {
+                  console.log(`${zoneName} est pleine !`);
+            }
+            break;
+      case "salleSecurite":
+            if(salleSecurite.length < zoneCapacities[zoneName])
+                  salleSecurite.push(emp);
+            else {
+            console.log(`${zoneName} est pleine !`);
+      }
+            break;
+      case "salleConference":
+            if(salleConference.length < zoneCapacities[zoneName])
+                  salleConference.push(emp);
+            else {
+                  console.log(`${zoneName} est pleine !`);
+            }
+            break;
+      case "sallePersonnel":
+            if(sallePersonnel.length < zoneCapacities[zoneName])
+                  sallePersonnel.push(emp);
+            else {
+                  console.log(`${zoneName} est pleine !`);
+            }
+            break;
+      case "salleArchives":
+            if(salleArchives.length < zoneCapacities[zoneName])
+                  salleArchives.push(emp);
+            else {
+                  console.log(`${zoneName} est pleine !`);
+            }
+            break;
+      }
+
+      // Optionnel : marquer l’employé comme assigné
+      emp.assignedZone = zoneName;
+      return true;
+}
+
+function remplirToutesZonesExemple() {
+      const employerList = getDataEmployersFromLocalStorageIfExist("employers");
+      renderCardsEmplyers(employerList,"sdBar")
+
+
+      employerList.forEach(emp => {
+      Object.keys(zoneRules).forEach(zone => {
+            // Assigner si possible
+            assignerEmployeAZone(emp, zone);
+      });
+      });
+
+      document.getElementById("conferenceBtn").addEventListener("click", () =>{
+            document.getElementById("nbrConferance").innerHTML = `
+            <span class="badge bg-light text-dark"><span id="nbrConferance" >${salleConference.length}</span>/${zoneCapacities.salleConference}</span>`
+            renderCardsEmplyers(salleConference, "salleConference")
+      } );
+
+      document.getElementById("receptionBtn").addEventListener("click",() =>{
+            document.getElementById("nbrReception").innerHTML = `
+            <span class="badge bg-light text-dark"><span id="nbrReception" >${reception.length}</span>/${zoneCapacities.reception}</span>`
+            renderCardsEmplyers(reception, "salleReception")
+      });
+      document.getElementById("serveursBtn").addEventListener("click",() =>{
+            document.getElementById("nbrServeurs").innerHTML = `
+            <span class="badge bg-light text-dark"><span id="nbrServeurs" >${salleServeurs.length}</span>/${zoneCapacities.salleServeurs}</span>`
+            renderCardsEmplyers(salleServeurs, "salleServeurs");
+      });
+
+      document.getElementById("securiteBtn").addEventListener("click",() =>{
+            document.getElementById("nbrSecurite").innerHTML = `
+            <span class="badge bg-light text-dark"><span id="nbrSecurite" >${salleSecurite.length}</span>/${zoneCapacities.salleSecurite}</span>`
+            renderCardsEmplyers(salleSecurite, "salleSecurite")
+      });
+
+      document.getElementById("receptionBtn").addEventListener("click",() =>{
+            document.getElementById("nbrReception").innerHTML = `
+            <span class="badge bg-light text-dark"><span id="nbrReception" >${reception.length}</span>/${zoneCapacities.reception}</span>`
+            renderCardsEmplyers(reception, "salleReception")
+      });
+      
+      document.getElementById("serveursBtn").addEventListener("click", renderCardsEmplyers(salleServeurs, "salleServeurs"))
+      document.getElementById("securiteBtn").addEventListener("click", renderCardsEmplyers(salleSecurite, "salleSecurite"))
+      document.getElementById("personnelBtn").addEventListener("click", renderCardsEmplyers(sallePersonnel, "sallePersonnel"))
+      document.getElementById("archiveBtn").addEventListener("click", renderCardsEmplyers(salleArchives, "salleArchive"))
+
+
+
+
+
+      // Affichage ou console pour vérifier
+      console.log("Reception:", reception);
+      console.log("Salle Serveurs:", salleServeurs);
+      console.log("Salle Securite:", salleSecurite);
+      console.log("Salle Conference:", salleConference);
+      console.log("Salle Personnel:", sallePersonnel);
+      console.log("Salle Archives:", salleArchives);
+}
+
+remplirToutesZonesExemple()
