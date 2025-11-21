@@ -1,0 +1,694 @@
+loadDataEmplyer();
+
+function loadDataEmplyer() {
+      let employerList = getDataEmployersFromLocalStorageIfExist("employers");
+      renderCardsEmplyers(employerList,"list-employe");
+}
+
+function getDataEmployersFromLocalStorageIfExist(keyData) {
+      let oldData = localStorage.getItem(keyData); //all time old data be null
+      if (oldData == null || oldData == undefined){
+            loadDataJson("../data/employe.json");
+            oldData = localStorage.getItem(keyData);
+      }
+      return JSON.parse(oldData);
+}
+
+async function loadDataJson(file) {
+      let responce = await fetch(file);
+      let newData = await responce.json();
+      let employerList = [];
+      if (newData.length == undefined) {
+      // it is an object employer
+      employerList.push(newData);
+      } else {
+      // new data is an array of object employer
+      newData.forEach((employer) => {
+            employerList.push(employer);
+      });
+      }
+      saveDataEmployerToLocalStorage("employers", employerList);
+}
+
+function saveDataEmployerToLocalStorage(keyData, dataList) {
+      localStorage.setItem(keyData, JSON.stringify(dataList));
+}
+
+// renderCardsEmplyers(employes);
+function renderCardsEmplyers(employerList, nom) {
+      document.getElementById(nom).innerHTML =
+      renderListEmployers(employerList);
+
+      employerFiltreParNomOuRole()
+
+
+      // affiche details
+      document.querySelectorAll(".employeeCard").forEach(card => {
+      card.addEventListener("click", () => {
+            let index = card.getAttribute("data-index");
+            detialProfile(index);
+      });
+      });
+}
+
+
+function renderListEmployers(employes) {
+      let cardListEmploye = "";
+      employes.map((employe, index) => {
+      cardListEmploye += renderCard(employe, index);
+      });
+      return cardListEmploye;
+}
+
+// data-bs-toggle="modal"  data-bs-target="#afficherProfile"
+function renderCard(employe, index) {
+      return `
+            <div class="card employeeCard" data-index="${index}" >
+            ${renderDetailCard(employe, index)}
+            </div>
+      `;
+}
+
+
+// 
+
+function renderDetailCard(employe, index) {
+return `
+      <div class="card-body" >
+            <div class="profile" data-bs-toggle="modal" data-bs-target="#profileDetailler" onclick="detialProfile(${index})">
+                  <img src=${employe.photo} alt="image profile">
+            </div>
+            <div class="content-profile">
+                  <h4>${employe.nom}</h4>
+                  <span>${employe.role}</span>
+            </div>
+            <div class="icons">
+                  <i class="fa-solid fa-pen"
+                  data-bs-toggle="modal"
+                  data-bs-target="#editEmployerModal"
+                  onclick="editEmployer(${index})"></i>
+
+                  <i class="fa-solid fa-trash" onclick="supprimerEmployer(${index})"
+                  ></i>
+            </div>
+      </div>
+      `;
+}
+
+function supprimerEmployer(index){
+      // console.log(index);
+      let employerList = getDataEmployersFromLocalStorageIfExist("employers");
+      employerList.splice(index, 1);
+      saveDataEmployerToLocalStorage("employers", employerList);
+      renderCardsEmplyers(employerList, "list-employe");
+}
+
+function editEmployer(index) {
+      let list = getDataEmployersFromLocalStorageIfExist("employers");
+      let emp = list[index];
+
+      let form = document.forms["editEmp"];
+
+      form.id.value = index;
+      form.editNomComplet.value = emp.nom;
+      form.editEmail.value = emp.email;
+      form.editTelephone.value = emp.telephone;
+      form.editPhoto.value = emp.photo;
+      form.editRole.value = emp.role;
+      document.getElementById("editImagePreview").src = emp.photo;
+}
+
+document.forms["editEmp"].addEventListener("submit", event =>{
+      
+      event.preventDefault();
+      let form = event.target;
+      idempEdit = form.id.value;
+      let list = getDataEmployersFromLocalStorageIfExist("employers");
+      empEditer = list[idempEdit];
+      empEditer.nom = form.editNomComplet.value;
+      empEditer.email = form.editEmail.value;
+      empEditer.telephone = form.editTelephone.value;
+      empEditer.photo = form.editPhoto.value;
+      console.log(empEditer);
+      list[idempEdit] = empEditer;
+      saveDataEmployerToLocalStorage("employers", list);
+      renderCardsEmplyers(list);
+})
+
+// fonction qui select quel option est il
+let selectrole = document.getElementById("selectRole");
+
+function getSelectedValue(el) {
+      var value = el.options[el.selectedIndex].value;
+      return value;
+}
+
+// ajout du forulaire dynamic des experiencs
+
+document.getElementById("ajouterExperience").addEventListener("click", () => {
+      addExperience();
+});
+
+function addExperience() {
+      const container = document.getElementById("experiencesListDynamicForm");
+
+      container.insertAdjacentHTML("beforeend", `
+      <div class="dynamicForm border rounded p-2 mb-3">
+
+            <div class="mb-3">
+                  <label class="form-label">Société</label>
+                  <input type="text" class="form-control" name="societe" placeholder="Youcode">
+                  <span class="error"></span>
+            </div>
+
+            <div class="mb-3">
+                  <label class="form-label">Role</label>
+                  <input type="text" class="form-control" name="Role" placeholder="IT">
+                  <span class="error"></span>
+            </div>
+
+            <div class="mb-3">
+                  <label class="form-label">De</label>
+                  <input type="date" class="form-control" name="dateDebut">
+                  <span class="error"></span>
+            </div>
+
+            <div class="mb-3">
+                  <label class="form-label">A</label>
+                  <input type="date" class="form-control" name="dateFin">
+                  <span class="error"></span>
+            </div>
+
+            <div class="mb-3 d-flex gap-2">
+                  <button type="button" class="btn btn-secondary w-100 ajouterExperienceInterne"> + Ajouter </button>
+                  <button type="button" class="btn btn-danger w-100 supprimerExperience">Supprimer</button>
+            </div>
+
+      </div>
+      `);
+
+      attachRealTimeValidation();
+}
+
+// Gérer les boutons internes ajouter et supprimer
+document.getElementById("experiencesListDynamicForm").addEventListener("click", (e) => {
+
+      // Ajouter une nouvelle expérience
+      if (e.target.classList.contains("ajouterExperienceInterne")) {
+            addExperience();
+      }
+
+      // Supprimer ce bloc d'expérience
+      if (e.target.classList.contains("supprimerExperience")) {
+            e.target.closest(".dynamicForm").remove();
+      }
+});
+
+function attachRealTimeValidation() {
+      document.querySelectorAll(".dynamicForm input").forEach(input => {
+
+            input.addEventListener("blur", () => {
+                  validateField(input);
+            });
+      });
+}
+
+function validateField(input) {
+      if (input.value.trim() === "") {
+            onErrorInput(input, "Ce champ est obligatoire");
+            return false;
+      } else {
+            onSuccessInput(input);
+            return true;
+      }
+}
+
+// sauvgardement deu formulaire apres la verification reel de chaque champ en utilisant l'evenement blur
+
+document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
+
+
+
+
+      let form = event.target;
+            // event.preventDefault();
+            // event.preventDefault();
+
+
+      if (validerForm()) {
+
+            let employer = {
+                  nom: form.nomComplet.value,
+                  role: getSelectedValue(selectrole),
+                  email: form.email.value,
+                  photo: form.photo.value,
+                  telephone: form.telephone.value,
+                  experiences: []
+            };
+
+
+            // Récupérer les expériences dynamiques
+            let societes = form.societe;
+            let roles = form.Role;
+            let datesDebut = form.dateDebut;
+            let datesFin = form.dateFin;
+
+            if (societes) {
+                  for (let i = 0; i < societes.length; i++) {
+                  employer.experiences.push({
+                        societe: societes[i].value,
+                        Role: roles[i].value,
+                        dateDebut: datesDebut[i].value,
+                        dateFin: datesFin[i].value
+                  });
+                  }
+            }
+            // Sauvegarder
+            ajouterEmployerToLocalStorage(employer);
+            form.reset();
+            loadDataEmplyer();
+            // Fermer le modal Bootstrap correctement
+            // const modalEl = document.getElementById("ajoutEmployeModal");
+            // const modal = bootstrap.Modal.getInstance(modalEl);
+            // modal.hide();
+
+      } 
+      else {
+            event.preventDefault();
+      }
+      });
+
+
+function ajouterEmployerToLocalStorage(employer) {
+      let employerList = getDataEmployersFromLocalStorageIfExist("employers");
+      employerList.push(employer);
+      saveDataEmployerToLocalStorage("employers", employerList);
+      // data katb9a kol mra t3awd tloda o ywli overriding o ila mdrthach kykhs nrefrecher la page
+      // loadDataEmplyer();
+}
+
+// Prévisualisation de la photo en temps réel
+document.getElementById("photo").addEventListener("input", function(event) {
+      const url = event.target.value.trim();
+      const imageArea = document.getElementById("imageArea");
+      if(url){
+            imageArea.setAttribute("src", url);
+      } else {
+            // Image par défaut si le champ est vide
+            imageArea.setAttribute("src", "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");
+      }
+      });
+
+// filtrage des listes par nom ou par role
+
+// function employerFiltreParNomOuRole(){
+//       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
+//       document.getElementById("searchRoleNom").addEventListener("input", e => {
+//       const value = e.target.value.toLowerCase()
+//       let employersFilt = [];
+//       employerList.forEach(emp => {
+//             if (emp.nom.toLowerCase().includes(value) || emp.role.toLowerCase().includes(value)){
+//                   employersFilt.push(emp)
+//             }else{
+//                   let card = document.createElement("div");
+//                   card.innerText = `<div class="AucunEmployerExistCard">
+//                                     <i class="fa-regular fa-user"></i>
+//                                     <h4>Aucun employe exist</h4>
+//                                     </div>`
+//                   document.getElementById("list-employe").appendChild(card);
+//             }
+//             if(employersFilt != [])
+//                   renderCardsEmplyers(employersFilt);
+//       })
+//       })
+// }
+function employerFiltreParNomOuRole(){
+      let employerList = getDataEmployersFromLocalStorageIfExist("employers");
+      document.getElementById("searchRoleNom").addEventListener("input", e => {
+            const value = e.target.value.toLowerCase();
+            let employersFilt = employerList.filter(emp => 
+                  emp.nom.toLowerCase().includes(value) || emp.role.toLowerCase().includes(value)
+            );
+
+            if (employersFilt.length > 0) {
+                  renderCardsEmplyers(employersFilt);
+            } else {
+                  document.getElementById("list-employe").innerHTML = `
+                        <div class="AucunEmployerExistCard">
+                              <i class="fa-regular fa-user"></i>
+                              <h4>Aucun employé exist</h4>
+                        </div>`;
+            }
+      });
+}
+
+function validerForm() {
+      let form = document.forms["ajouterEmployer"];
+      let estvalid = true;
+
+      // ===== VALIDATION NOM ===== //
+      if (!form.nomComplet.value.trim().match(/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{3,}$/)) {
+            onErrorInput(form.nomComplet, "Nom complet non valide");
+            estvalid = false;
+      } else {
+            onSuccessInput(form.nomComplet);
+      }
+
+      // ===== VALIDATION EMAIL ===== //
+      if (!form.email.value.trim().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+            onErrorInput(form.email, "Email non valide");
+            estvalid = false;
+      } else {
+            onSuccessInput(form.email);
+      }
+
+      // ===== VALIDATION TELEPHONE ===== //
+      if (!form.telephone.value.trim().match(/^(\+?\d{1,3}[- ]?)?\d{9,10}$/)) {
+            onErrorInput(form.telephone, "Téléphone non valide");
+            estvalid = false;
+      } else {
+            onSuccessInput(form.telephone);
+      }
+
+      // ===== VALIDATION ROLE ===== //
+      let roleValue = selectrole.value;
+      if (!roleValue) {
+      onErrorInput(selectrole, "Veuillez choisir un rôle");
+            estvalid = false;
+      } else {
+      onSuccessInput(selectrole);
+}
+
+      // ===== VALIDATION PHOTO ===== //
+      let photo = form.photo.value.trim();
+      if (photo === "") {
+            form.photo.value =
+                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png";
+      } else if (!photo.match(/^https?:\/\/.+/)) {
+            onErrorInput(form.photo, "URL de photo invalide");
+            estvalid = false;
+      } else {
+            onSuccessInput(form.photo);
+      }
+
+
+      //VALIDATION DES EXPERIENCES DYNAMIQUES
+
+      let societes = form.societe;
+            let roles = form.Role;
+            let datesDebut = form.dateDebut;
+            let datesFin = form.dateFin;
+
+      // Aucun bloc d'expérience 
+      if (!societes) return estvalid;
+
+      // Si une seule expérience on la transformer en tableau pour uniformité
+      if (societes && !societes.length) {
+            societes = [societes];
+            roles = [roles];
+            datesDebut = [datesDebut];
+            datesFin = [datesFin];
+}
+
+      for (let i = 0; i < societes.length; i++) {
+
+            // === Société ===
+            if (societes[i].value.trim() === "") {
+                  onErrorInput(societes[i], "Société obligatoire");
+                  estvalid = false;
+            } else {
+                  onSuccessInput(societes[i]);
+            }
+
+            // === Role ===
+            if (roles[i].value.trim() === "") {
+                  onErrorInput(roles[i], "Rôle obligatoire");
+                  estvalid = false;
+            } else {
+                  onSuccessInput(roles[i]);
+            }
+
+            // === Dates ===
+            if (datesDebut[i].value === "") {
+                  onErrorInput(datesDebut[i], "Date début obligatoire");
+                  estvalid = false;
+            } else {
+                  onSuccessInput(datesDebut[i]);
+            }
+
+            if (datesFin[i].value === "") {
+                  onErrorInput(datesFin[i], "Date fin obligatoire");
+                  estvalid = false;
+            } else {
+                  onSuccessInput(datesFin[i]);
+            }
+
+            // === Date cohérente ===
+            if (datesDebut[i].value && datesFin[i].value) {
+                  if (new Date(datesDebut[i].value) > new Date(datesFin[i].value)) {
+                  onErrorInput(datesFin[i], "La date de fin doit être ≥ date début");
+                  estvalid = false;
+                  }
+            }
+      }
+
+      return estvalid;
+      }
+
+function resetForm(form){
+
+      form.nomComplet.value ="";
+      // console.log(form.nomCompl)
+      form.email.value ="";
+      // form.selectRole=""
+      form.telephone.value ="";
+      form.photo.value = "";
+}
+
+function onSuccessInput(input){
+      // console.log(1)
+      let parentInput = input.parentElement;
+      let messageElm = parentInput.querySelector("span");
+      messageElm.style.display ="none";
+      messageElm.innerText ="";
+}
+
+function onErrorInput(input, message){
+      // console.log(2)
+      let parentInput = input.parentElement;
+      let messageElm = parentInput.querySelector("span");
+      messageElm.style.display ="block";
+      messageElm.innerText =message;
+}
+
+// ajouter detial profile
+function detialProfile(index){
+      let list = getDataEmployersFromLocalStorageIfExist("employers");
+      let emp = list[index];
+      console.log(typeof(emp));
+      let cardDetail = "";
+      let experiencesHTML = emp.experiences.map(exp => `
+      <div class="p-3 bg-light border rounded mb-2">
+            <p class="mb-1 fw-semibold">${exp.Role}</p>
+            <p class="mb-1 text-muted small">${exp.societe}</p>
+            <p class="mb-0 text-muted small">${exp.dateDebut} - ${exp.dateFin}</p>
+      </div>
+`).join('');
+      document.getElementById("detailInfo").innerHTML = `
+            <!-- Header -->
+            <div class="position-relative">
+
+            <!-- Gradient Header -->
+                  <div class="rounded-top" style="height: 150px; background: linear-gradient(135deg, #1D4ED8, #7C3AED);"></div>
+
+            <!-- Profile Image -->
+                  <div class="text-center" style="margin-top: -60px;">
+                        <img src=${emp.photo} 
+                        alt="photo profile" 
+                        class="rounded-circle border border-white shadow" 
+                        style="width: 120px; height: 120px; object-fit: cover;">
+                  </div>
+
+            <!-- Name & Role -->
+                  <div class="text-center mt-2 mb-4">
+                        <h4 class="text-dark">${emp.nom}</h4>
+                        <p class="text-primary mb-0">${emp.role}</p>
+                  </div>
+            </div>
+
+            <!-- Content -->
+            <div class="modal-body">
+
+            <!-- Contact Info -->
+            <h5>Informations de contact</h5>
+            <div class="mb-3">
+            <p class="mb-1"><i class="bi bi-envelope-fill text-primary"></i> 
+                  <a href="#" class="text-decoration-none text-primary">${emp.email}</a>
+            </p>
+            <p class="mb-1"><i class="bi bi-telephone-fill text-primary"></i> 
+                  <a href="#" class="text-decoration-none text-primary">${emp.telephone}</a>
+            </p>
+            </div>
+
+            <!-- Experiences -->
+            <h5 class="mt-4">Expériences professionnelles</h5>
+            <div class="row g-3">
+            <div class="col-12">
+                  ${experiencesHTML}
+            </div>
+            </div>
+
+            </div>
+      </div>
+      `
+
+      console.log(emp);
+
+}
+
+// les regles metiers
+const zoneRules = {
+      reception: ["Receptionniste", "Manager", "Nettoyage"],
+      salleServeurs: ["Technici, en it", "Manager", "Nettoyage"],
+      salleSecurite: ["Agent de securite", "Manager", "Nettoyage"],
+      salleConference: ["Manager", "Receptionniste", "Technicien IT", "Agent de securite", "Nettoyage", "Devloppeur", "Comptable", "RH", "Commercial"],
+      sallePersonnel: ["Manager", "Receptionniste", "Technicien IT", "Agent de securite", "Nettoyage", "Devloppeur", "Comptable", "RH", "Commercial"],
+      salleArchives: ["Manager", "Receptionniste", "Technicien IT", "Agent de securite", "Devloppeur", "Comptable", "RH", "Commercial"]  
+};
+
+let reception = [];
+let salleServeurs = [];
+let salleSecurite = [];
+let salleConference = [];
+let sallePersonnel = [];
+let salleArchives = [];
+
+const zoneCapacities = {
+      reception: 2,
+      salleServeurs: 3,
+      salleSecurite: 4,
+      salleConference: 5,
+      sallePersonnel: 5,
+      salleArchives: 2
+};
+
+
+function assignerEmployeAZone(emp, zoneName) {
+  // Vérifier si l’employé est éligible
+      if (!zoneRules[zoneName].includes(emp.role) && emp.role !== "Manager") {
+      console.log(`${emp.nom} (${emp.role}) ne peut pas être assigné à ${zoneName}`);
+      return false;
+      }
+
+      // Ajouter à la zone correspondante
+      switch(zoneName) {
+      case "reception":
+            if(reception.length < zoneCapacities[zoneName]){
+                  reception.push(emp);                  
+            }
+            else {
+            console.log(`${zoneName} est pleine !`);
+      }
+            break;
+      case "salleServeurs":
+            if(salleServeurs.length < zoneCapacities[zoneName])
+                  salleServeurs.push(emp);
+            else {
+                  console.log(`${zoneName} est pleine !`);
+            }
+            break;
+      case "salleSecurite":
+            if(salleSecurite.length < zoneCapacities[zoneName])
+                  salleSecurite.push(emp);
+            else {
+            console.log(`${zoneName} est pleine !`);
+      }
+            break;
+      case "salleConference":
+            if(salleConference.length < zoneCapacities[zoneName])
+                  salleConference.push(emp);
+            else {
+                  console.log(`${zoneName} est pleine !`);
+            }
+            break;
+      case "sallePersonnel":
+            if(sallePersonnel.length < zoneCapacities[zoneName])
+                  sallePersonnel.push(emp);
+            else {
+                  console.log(`${zoneName} est pleine !`);
+            }
+            break;
+      case "salleArchives":
+            if(salleArchives.length < zoneCapacities[zoneName])
+                  salleArchives.push(emp);
+            else {
+                  console.log(`${zoneName} est pleine !`);
+            }
+            break;
+      }
+
+      // Optionnel : marquer l’employé comme assigné
+      emp.assignedZone = zoneName;
+      return true;
+}
+
+function remplirToutesZonesExemple() {
+      const employerList = getDataEmployersFromLocalStorageIfExist("employers");
+      renderCardsEmplyers(employerList,"sdBar")
+
+
+      employerList.forEach(emp => {
+      Object.keys(zoneRules).forEach(zone => {
+            // Assigner si possible
+            assignerEmployeAZone(emp, zone);
+      });
+      });
+
+      document.getElementById("conferenceBtn").addEventListener("click", () =>{
+            document.getElementById("nbrConferance").innerHTML = `
+            <span class="badge bg-light text-dark"><span id="nbrConferance" >${salleConference.length}</span>/${zoneCapacities.salleConference}</span>`
+            renderCardsEmplyers(salleConference, "salleConference")
+      } );
+
+      document.getElementById("receptionBtn").addEventListener("click",() =>{
+            document.getElementById("nbrReception").innerHTML = `
+            <span class="badge bg-light text-dark"><span id="nbrReception" >${reception.length}</span>/${zoneCapacities.reception}</span>`
+            renderCardsEmplyers(reception, "salleReception")
+      });
+      document.getElementById("serveursBtn").addEventListener("click",() =>{
+            document.getElementById("nbrServeurs").innerHTML = `
+            <span class="badge bg-light text-dark"><span id="nbrServeurs" >${salleServeurs.length}</span>/${zoneCapacities.salleServeurs}</span>`
+            renderCardsEmplyers(salleServeurs, "salleServeurs");
+      });
+
+      document.getElementById("securiteBtn").addEventListener("click",() =>{
+            document.getElementById("nbrSecurite").innerHTML = `
+            <span class="badge bg-light text-dark"><span id="nbrSecurite" >${salleSecurite.length}</span>/${zoneCapacities.salleSecurite}</span>`
+            renderCardsEmplyers(salleSecurite, "salleSecurite")
+      });
+
+      document.getElementById("receptionBtn").addEventListener("click",() =>{
+            document.getElementById("nbrReception").innerHTML = `
+            <span class="badge bg-light text-dark"><span id="nbrReception" >${reception.length}</span>/${zoneCapacities.reception}</span>`
+            renderCardsEmplyers(reception, "salleReception")
+      });
+      
+      document.getElementById("serveursBtn").addEventListener("click", renderCardsEmplyers(salleServeurs, "salleServeurs"))
+      document.getElementById("securiteBtn").addEventListener("click", renderCardsEmplyers(salleSecurite, "salleSecurite"))
+      document.getElementById("personnelBtn").addEventListener("click", renderCardsEmplyers(sallePersonnel, "sallePersonnel"))
+      document.getElementById("archiveBtn").addEventListener("click", renderCardsEmplyers(salleArchives, "salleArchive"))
+
+
+
+
+
+      // Affichage ou console pour vérifier
+      console.log("Reception:", reception);
+      console.log("Salle Serveurs:", salleServeurs);
+      console.log("Salle Securite:", salleSecurite);
+      console.log("Salle Conference:", salleConference);
+      console.log("Salle Personnel:", sallePersonnel);
+      console.log("Salle Archives:", salleArchives);
+}
+
+remplirToutesZonesExemple()
