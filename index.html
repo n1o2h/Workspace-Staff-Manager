@@ -178,7 +178,7 @@
                     <div class="mb-3">
                         <label for="selectRole" class="form-label">Role</label>
                         <span></span>
-                        <select class="form-select" name="selectRole" id="selectRole" onchange="toggle(this)">
+                        <select class="form-select" name="selectRole" id="selectRole" onchange="getSelectedValue(this)">
                             <!-- <option selected>Choisie un role</option> -->
                             <option value="Developpeur" selected>Développeur</option>
                             <option value="Receptionniste">Réceptionniste</option>
@@ -374,7 +374,7 @@
             
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal">Fermer</button>
         </div>
         </div>
     </div>

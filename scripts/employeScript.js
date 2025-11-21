@@ -7,9 +7,10 @@ function loadDataEmplyer() {
 
 function getDataEmployersFromLocalStorageIfExist(keyData) {
       let oldData = localStorage.getItem(keyData); //all time old data be null
-      if (oldData == null || oldData == undefined)
-      loadDataJson("../data/employe.json");
-      oldData = localStorage.getItem(keyData);
+      if (oldData == null || oldData == undefined){
+            loadDataJson("../data/employe.json");
+            oldData = localStorage.getItem(keyData);
+      }
       return JSON.parse(oldData);
 }
 
@@ -37,10 +38,21 @@ function saveDataEmployerToLocalStorage(keyData, dataList) {
 function renderCardsEmplyers(employerList) {
       document.getElementById("list-employe").innerHTML =
       renderListEmployers(employerList);
+
+      employerFiltreParNomOuRole()
+
+
+      // affiche details
+      document.querySelectorAll(".employeeCard").forEach(card => {
+      card.addEventListener("click", () => {
+            let index = card.getAttribute("data-index");
+            detialProfile(index);
+      });
+      });
 }
 
 function renderListEmployers(employes) {
-      cardListEmploye = "";
+      let cardListEmploye = "";
       employes.map((employe, index) => {
       cardListEmploye += renderCard(employe, index);
       });
@@ -50,11 +62,13 @@ function renderListEmployers(employes) {
 // data-bs-toggle="modal"  data-bs-target="#afficherProfile"
 function renderCard(employe, index) {
       return `
-            <div class="card" data-bs-toggle="modal" data-bs-target="#profileDetailler" onclick="detialProfile(${index})">
+            <div class="card employeeCard" data-index="${index}" data-bs-toggle="modal" data-bs-target="#profileDetailler" onclick="detialProfile(${index})">
             ${renderDetailCard(employe, index)}
             </div>
       `;
 }
+
+
 // 
 
 function renderDetailCard(employe, index) {
@@ -113,7 +127,7 @@ document.forms["editEmp"].addEventListener("submit", event =>{
       empEditer.nom = form.editNomComplet.value;
       empEditer.email = form.editEmail.value;
       empEditer.telephone = form.editTelephone.value;
-      // empEditer.photo = form.editPhoto.value;
+      empEditer.photo = form.editPhoto.value;
       console.log(empEditer);
       list[idempEdit] = empEditer;
       saveDataEmployerToLocalStorage("employers", list);
@@ -123,7 +137,7 @@ document.forms["editEmp"].addEventListener("submit", event =>{
 // fonction qui select quel option est il
 let selectrole = document.getElementById("selectRole");
 
-function toggle(el) {
+function getSelectedValue(el) {
       var value = el.options[el.selectedIndex].value;
       return value;
 }
@@ -171,14 +185,12 @@ function addExperience() {
 
       </div>
       `);
-      console.log(11);
 
       attachRealTimeValidation();
 }
 
 // Gérer les boutons internes ajouter et supprimer
 document.getElementById("experiencesListDynamicForm").addEventListener("click", (e) => {
-      console.log(11);
 
       // Ajouter une nouvelle expérience
       if (e.target.classList.contains("ajouterExperienceInterne")) {
@@ -193,7 +205,6 @@ document.getElementById("experiencesListDynamicForm").addEventListener("click", 
 
 function attachRealTimeValidation() {
       document.querySelectorAll(".dynamicForm input").forEach(input => {
-      console.log(11);
 
             input.addEventListener("blur", () => {
                   validateField(input);
@@ -202,8 +213,6 @@ function attachRealTimeValidation() {
 }
 
 function validateField(input) {
-      console.log(11);
-
       if (input.value.trim() === "") {
             onErrorInput(input, "Ce champ est obligatoire");
             return false;
@@ -217,7 +226,11 @@ function validateField(input) {
 
 document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
 
+
+
+
       let form = event.target;
+            // event.preventDefault();
             // event.preventDefault();
 
 
@@ -225,7 +238,7 @@ document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
 
             let employer = {
                   nom: form.nomComplet.value,
-                  role: toggle(selectrole),
+                  role: getSelectedValue(selectrole),
                   email: form.email.value,
                   photo: form.photo.value,
                   telephone: form.telephone.value,
@@ -236,7 +249,7 @@ document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
             // Récupérer les expériences dynamiques
             let societes = form.societe;
             let roles = form.Role;
-            let datesDebut = form;
+            let datesDebut = form.dateDebut;
             let datesFin = form.dateFin;
 
             if (societes) {
@@ -251,6 +264,12 @@ document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
             }
             // Sauvegarder
             ajouterEmployerToLocalStorage(employer);
+            form.reset();
+            loadDataEmplyer();
+            // Fermer le modal Bootstrap correctement
+            // const modalEl = document.getElementById("ajoutEmployeModal");
+            // const modal = bootstrap.Modal.getInstance(modalEl);
+            // modal.hide();
 
       } 
       else {
@@ -281,28 +300,46 @@ document.getElementById("photo").addEventListener("input", function(event) {
 
 // filtrage des listes par nom ou par role
 
+// function employerFiltreParNomOuRole(){
+//       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
+//       document.getElementById("searchRoleNom").addEventListener("input", e => {
+//       const value = e.target.value.toLowerCase()
+//       let employersFilt = [];
+//       employerList.forEach(emp => {
+//             if (emp.nom.toLowerCase().includes(value) || emp.role.toLowerCase().includes(value)){
+//                   employersFilt.push(emp)
+//             }else{
+//                   let card = document.createElement("div");
+//                   card.innerText = `<div class="AucunEmployerExistCard">
+//                                     <i class="fa-regular fa-user"></i>
+//                                     <h4>Aucun employe exist</h4>
+//                                     </div>`
+//                   document.getElementById("list-employe").appendChild(card);
+//             }
+//             if(employersFilt != [])
+//                   renderCardsEmplyers(employersFilt);
+//       })
+//       })
+// }
 function employerFiltreParNomOuRole(){
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
       document.getElementById("searchRoleNom").addEventListener("input", e => {
-      const value = e.target.value.toLowerCase()
-      let employersFilt = [];
-      employerList.forEach(emp => {
-            if (emp.nom.toLowerCase().includes(value) || emp.role.toLowerCase().includes(value)){
-                  employersFilt.push(emp)
-            }else{
-                  let card = document.createElement("div");
-                  card.innerText = `<div class="AucunEmployerExistCard">
-                                    <i class="fa-regular fa-user"></i>
-                                    <h4>Aucun employe exist</h4>
-                                    </div>`
-                  document.getElementById("list-employe").appendChild(card);
-            }
-            if(employersFilt != [])
+            const value = e.target.value.toLowerCase();
+            let employersFilt = employerList.filter(emp => 
+                  emp.nom.toLowerCase().includes(value) || emp.role.toLowerCase().includes(value)
+            );
+
+            if (employersFilt.length > 0) {
                   renderCardsEmplyers(employersFilt);
-      })
-      })
+            } else {
+                  document.getElementById("list-employe").innerHTML = `
+                        <div class="AucunEmployerExistCard">
+                              <i class="fa-regular fa-user"></i>
+                              <h4>Aucun employé exist</h4>
+                        </div>`;
+            }
+      });
 }
-employerFiltreParNomOuRole()
 
 function validerForm() {
       let form = document.forms["ajouterEmployer"];
@@ -333,9 +370,13 @@ function validerForm() {
       }
 
       // ===== VALIDATION ROLE ===== //
-      if (!toggle(selectrole).match(/[a-zA-Z0-9]+/)) {
+      let roleValue = selectrole.value;
+      if (!roleValue) {
+      onErrorInput(selectrole, "Veuillez choisir un rôle");
             estvalid = false;
-      }
+      } else {
+      onSuccessInput(selectrole);
+}
 
       // ===== VALIDATION PHOTO ===== //
       let photo = form.photo.value.trim();
@@ -352,21 +393,21 @@ function validerForm() {
 
       //VALIDATION DES EXPERIENCES DYNAMIQUES
 
-      let societes = form["societe[]"];
-      let roles = form["Role[]"];
-      let datesDebut = form["dateDebut[]"];
-      let datesFin = form["dateFin[]"];
+      let societes = form.societe;
+            let roles = form.Role;
+            let datesDebut = form.dateDebut;
+            let datesFin = form.dateFin;
 
       // Aucun bloc d'expérience 
       if (!societes) return estvalid;
 
       // Si une seule expérience on la transformer en tableau pour uniformité
-      if (!societes.length) {
+      if (societes && !societes.length) {
             societes = [societes];
             roles = [roles];
             datesDebut = [datesDebut];
             datesFin = [datesFin];
-      }
+}
 
       for (let i = 0; i < societes.length; i++) {
 
@@ -443,7 +484,15 @@ function onErrorInput(input, message){
 function detialProfile(index){
       let list = getDataEmployersFromLocalStorageIfExist("employers");
       let emp = list[index];
+      console.log(typeof(emp));
       let cardDetail = "";
+      let experiencesHTML = emp.experiences.map(exp => `
+      <div class="p-3 bg-light border rounded mb-2">
+            <p class="mb-1 fw-semibold">${exp.Role}</p>
+            <p class="mb-1 text-muted small">${exp.societe}</p>
+            <p class="mb-0 text-muted small">${exp.dateDebut} - ${exp.dateFin}</p>
+      </div>
+`).join('');
       document.getElementById("detailInfo").innerHTML = `
             <!-- Header -->
             <div class="position-relative">
@@ -484,25 +533,12 @@ function detialProfile(index){
             <h5 class="mt-4">Expériences professionnelles</h5>
             <div class="row g-3">
             <div class="col-12">
-                  <div class="p-3 bg-light border rounded">
-                  <p class="mb-1 fw-semibold">${emp.experiences.societe}</p>
-                  <p class="mb-1 text-muted small">${emp.experiences.Role}</p>
-                  <p class="mb-0 text-muted small">Janvier 2024 - Juin 2025</p>
-                  </div>
-            </div>
-            <div class="col-12">
-                  <div class="p-3 bg-light border rounded">
-                  <p class="mb-1 fw-semibold">Chef de projet</p>
-                  <p class="mb-1 text-muted small">Arena Connect</p>
-                  <p class="mb-0 text-muted small">Juillet 2025 - Aujourd'hui</p>
-                  </div>
+                  ${experiencesHTML}
             </div>
             </div>
 
             </div>
       </div>
-      
-      
       `
 
       console.log(emp);
