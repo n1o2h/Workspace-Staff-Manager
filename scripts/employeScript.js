@@ -1,11 +1,11 @@
 //  les regles metiers
 const zoneRules = {
       reception: ["Receptionniste", "Manager", "Nettoyage"],
-      salleServeurs: ["Technici, en it", "Manager", "Nettoyage"],
+      salleServeurs: ["Technicien it", "Manager", "Nettoyage"],
       salleSecurite: ["Agent de securite", "Manager", "Nettoyage"],
-      salleConference: ["Manager", "Receptionniste", "Technicien IT", "Agent de securite", "Nettoyage", "Devloppeur", "Comptable", "RH", "Commercial"],
-      sallePersonnel: ["Manager", "Receptionniste", "Technicien IT", "Agent de securite", "Nettoyage", "Devloppeur", "Comptable", "RH", "Commercial"],
-      salleArchives: ["Manager", "Receptionniste", "Technicien IT", "Agent de securite", "Devloppeur", "Comptable", "RH", "Commercial"]  
+      salleConference: ["Manager", "Receptionniste", "Technicien it", "Agent de securite", "Nettoyage", "Developpeur", "Comptable", "RH", "Commercial", "Archiviste", "RH"],
+      sallePersonnel: ["Manager", "Receptionniste", "Technicien it", "Agent de securite", "Nettoyage", "Developpeur", "Comptable", "RH", "Commercial", "Archiviste", "RH"],
+      salleArchives: ["Manager", "Receptionniste", "Technicien it", "Agent de securite", "Developpeur", "Comptable", "RH", "Commercial", "Archiviste", "RH"]  
 };
 
 let reception = [];
