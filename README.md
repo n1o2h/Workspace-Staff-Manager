@@ -81,7 +81,7 @@ prédéfinies.
 
 -   Organisation via Trello, Jira ou GitHub Projects 
 ``` bash
-<[url-du-trello](https://github.com/n1o2h/Workspace-Staff-Manager.git)>.
+<[url-du-trello](https://trello.com/b/m5FxIDDv/workspace-staff-manager)>.
 
 ```
 -   Gestion des branches Git (optionnel).
