@@ -124,7 +124,8 @@ header nav {
 
 .sidebar{
     border-right: 1px solid var(--border);
-    /* background: var(--sidebar); */
+    height: 100vh;          
+    overflow-y: auto; 
 }
 
 .container-ajouter-emp{
@@ -138,6 +139,7 @@ header nav {
     /* background-color: red; */
     display: flex;
     justify-content: space-between;
+    /* gap: 20px; */
     align-items: center;
 }
 .nbr-employe{
@@ -171,16 +173,9 @@ header nav {
     background: var(--sidebar);
     padding: 20px;
 }
-.image-etage{
-    /* background-image: url(../images/imageEtage.jpg); */
-    background-repeat: no-repeat;
-    background-size: contain;
-    width: 100%;
-    height: 500px;
-    position: relative;
-}
 
 .profile{
+    grid-column: 1 / 2;
     width: 60px;
     height: 60px;
     border: 3px solid var(--third-color-text);
@@ -198,7 +193,7 @@ header nav {
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    /* gap: 10px; */
 }
 
 .hide{
@@ -219,10 +214,23 @@ header nav {
 
 .card-body{
     display: flex;
+    /* gap: 20px; */
     justify-content: space-around;
     align-items: center;
 }
+.card-body{
+    display: grid;
+    /* gap: 20px; */
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    /* justify-content: space-around; */
+    align-items: center;
+}
+.content-profile {
+    grid-column: 2 /4;
+}
 
+
+.card-body
 .content-profile h4{
     font-size: 1em;
     text-align: start;
@@ -235,6 +243,8 @@ header nav {
 }
 
 .icons{
+    direction: rtl;
+    grid-column: 4 /-1;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -274,9 +284,7 @@ form span{
     text-align: center;
 
 }
-/* .hideBnt{
-    visibility: hidden;
-} */
+
 
 .dynamicForm{
     background: var(--sidebar);
@@ -285,31 +293,4 @@ form span{
     padding: 20px;
     margin:20px 0;
 }
-/* 
-@media (max-width:767px){
-    .plan{
-        display: grid;
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr 1fr;
-    }
-    .sdbar{
-        width: 100%;
-        grid-column: 1/-1;
-    }
-} */
- /* Small devices (landscape phones, 576px and up) */
-@media (min-width: 576px) { };
-
-/* // Medium devices (tablets, 768px and up) */
-@media (min-width: 768px) { };
-
-/* // Large devices (desktops, 992px and up) */
-@media (min-width: 992px) { };
-
-/* // X-Large devices (large desktops, 1200px and up) */
-@media (min-width: 1200px) { };
-
-/* // XX-Large devices (larger desktops, 1400px and up) */
-@media (min-width: 1400px) { };
-
 
