@@ -1,8 +1,35 @@
+//  les regles metiers
+const zoneRules = {
+      reception: ["Receptionniste", "Manager", "Nettoyage"],
+      salleServeurs: ["Technici, en it", "Manager", "Nettoyage"],
+      salleSecurite: ["Agent de securite", "Manager", "Nettoyage"],
+      salleConference: ["Manager", "Receptionniste", "Technicien IT", "Agent de securite", "Nettoyage", "Devloppeur", "Comptable", "RH", "Commercial"],
+      sallePersonnel: ["Manager", "Receptionniste", "Technicien IT", "Agent de securite", "Nettoyage", "Devloppeur", "Comptable", "RH", "Commercial"],
+      salleArchives: ["Manager", "Receptionniste", "Technicien IT", "Agent de securite", "Devloppeur", "Comptable", "RH", "Commercial"]  
+};
+
+let reception = [];
+let salleServeurs = [];
+let salleSecurite = [];
+let salleConference = [];
+let sallePersonnel = [];
+let salleArchives = [];
+
+const zoneCapacities = {
+      reception: 2,
+      salleServeurs: 3,
+      salleSecurite: 4,
+      salleConference: 5,
+      sallePersonnel: 5,
+      salleArchives: 2
+};
+
 loadDataEmplyer();
 
 function loadDataEmplyer() {
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
       renderCardsEmplyers(employerList,"list-employe");
+      remplirToutesZonesExemple();
 }
 
 function getDataEmployersFromLocalStorageIfExist(keyData) {
@@ -29,18 +56,30 @@ async function loadDataJson(file) {
       }
       saveDataEmployerToLocalStorage("employers", employerList);
 }
+function nbrEmployersNonAsignes(employerList){
+      document.getElementById("nbrEmploye").innerHTML = `
+      <span>${employerList.length}</span>`
+
+}
 
 function saveDataEmployerToLocalStorage(keyData, dataList) {
       localStorage.setItem(keyData, JSON.stringify(dataList));
+
 }
 
 // renderCardsEmplyers(employes);
 function renderCardsEmplyers(employerList, nom) {
+      nbrEmployersNonAsignes(employerList);
+      if(!employerList.length){
+            document.getElementById(nom).innerHTML = `
+                  <div class="AucunEmployerExistCard">
+                        <i class="fa-regular fa-user"></i>
+                        <h4>Aucun employe exist</h4>
+                  </div>
+            `
+      }
       document.getElementById(nom).innerHTML =
       renderListEmployers(employerList);
-
-      employerFiltreParNomOuRole()
-
 
       // affiche details
       document.querySelectorAll(".employeeCard").forEach(card => {
@@ -50,7 +89,6 @@ function renderCardsEmplyers(employerList, nom) {
       });
       });
 }
-
 
 function renderListEmployers(employes) {
       let cardListEmploye = "";
@@ -63,14 +101,11 @@ function renderListEmployers(employes) {
 // data-bs-toggle="modal"  data-bs-target="#afficherProfile"
 function renderCard(employe, index) {
       return `
-            <div class="card employeeCard" data-index="${index}" >
+            <div class="card employeeCard mb-3" data-index="${index}" >
             ${renderDetailCard(employe, index)}
             </div>
       `;
 }
-
-
-// 
 
 function renderDetailCard(employe, index) {
 return `
@@ -119,20 +154,18 @@ function editEmployer(index) {
 }
 
 document.forms["editEmp"].addEventListener("submit", event =>{
-      
       event.preventDefault();
       let form = event.target;
-      idempEdit = form.id.value;
-      let list = getDataEmployersFromLocalStorageIfExist("employers");
-      empEditer = list[idempEdit];
-      empEditer.nom = form.editNomComplet.value;
-      empEditer.email = form.editEmail.value;
-      empEditer.telephone = form.editTelephone.value;
-      empEditer.photo = form.editPhoto.value;
-      console.log(empEditer);
-      list[idempEdit] = empEditer;
-      saveDataEmployerToLocalStorage("employers", list);
-      renderCardsEmplyers(list);
+            idempEdit = form.id.value;
+            let list = getDataEmployersFromLocalStorageIfExist("employers");
+            empEditer = list[idempEdit];
+            empEditer.nom = form.editNomComplet.value;
+            empEditer.email = form.editEmail.value;
+            empEditer.telephone = form.editTelephone.value;
+            empEditer.photo = form.editPhoto.value;
+            list[idempEdit] = empEditer;
+            saveDataEmployerToLocalStorage("employers", list);
+            renderCardsEmplyers(list, "list-employe");
 })
 
 // fonction qui select quel option est il
@@ -144,7 +177,6 @@ function getSelectedValue(el) {
 }
 
 // ajout du forulaire dynamic des experiencs
-
 document.getElementById("ajouterExperience").addEventListener("click", () => {
       addExperience();
 });
@@ -224,18 +256,11 @@ function validateField(input) {
 }
 
 // sauvgardement deu formulaire apres la verification reel de chaque champ en utilisant l'evenement blur
-
 document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
 
-
-
-
       let form = event.target;
-            // event.preventDefault();
-            // event.preventDefault();
 
-
-      if (validerForm()) {
+      if (validerForm("ajouterEmployer")) {
 
             let employer = {
                   nom: form.nomComplet.value,
@@ -278,7 +303,6 @@ document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
       }
       });
 
-
 function ajouterEmployerToLocalStorage(employer) {
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
       employerList.push(employer);
@@ -298,30 +322,7 @@ document.getElementById("photo").addEventListener("input", function(event) {
             imageArea.setAttribute("src", "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");
       }
       });
-
-// filtrage des listes par nom ou par role
-
-// function employerFiltreParNomOuRole(){
-//       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
-//       document.getElementById("searchRoleNom").addEventListener("input", e => {
-//       const value = e.target.value.toLowerCase()
-//       let employersFilt = [];
-//       employerList.forEach(emp => {
-//             if (emp.nom.toLowerCase().includes(value) || emp.role.toLowerCase().includes(value)){
-//                   employersFilt.push(emp)
-//             }else{
-//                   let card = document.createElement("div");
-//                   card.innerText = `<div class="AucunEmployerExistCard">
-//                                     <i class="fa-regular fa-user"></i>
-//                                     <h4>Aucun employe exist</h4>
-//                                     </div>`
-//                   document.getElementById("list-employe").appendChild(card);
-//             }
-//             if(employersFilt != [])
-//                   renderCardsEmplyers(employersFilt);
-//       })
-//       })
-// }
+      
 function employerFiltreParNomOuRole(){
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
       document.getElementById("searchRoleNom").addEventListener("input", e => {
@@ -331,7 +332,9 @@ function employerFiltreParNomOuRole(){
             );
 
             if (employersFilt.length > 0) {
-                  renderCardsEmplyers(employersFilt);
+                  console.log(20);
+                  renderCardsEmplyers(employersFilt, "list-employe");
+                  // saveDataEmployerToLocalStorage("emplyers", em)
             } else {
                   document.getElementById("list-employe").innerHTML = `
                         <div class="AucunEmployerExistCard">
@@ -342,8 +345,10 @@ function employerFiltreParNomOuRole(){
       });
 }
 
-function validerForm() {
-      let form = document.forms["ajouterEmployer"];
+employerFiltreParNomOuRole();
+
+function validerForm(nom) {
+      let form = document.forms[nom];
       let estvalid = true;
 
       // ===== VALIDATION NOM ===== //
@@ -466,7 +471,6 @@ function resetForm(form){
 }
 
 function onSuccessInput(input){
-      // console.log(1)
       let parentInput = input.parentElement;
       let messageElm = parentInput.querySelector("span");
       messageElm.style.display ="none";
@@ -474,7 +478,6 @@ function onSuccessInput(input){
 }
 
 function onErrorInput(input, message){
-      // console.log(2)
       let parentInput = input.parentElement;
       let messageElm = parentInput.querySelector("span");
       messageElm.style.display ="block";
@@ -485,13 +488,11 @@ function onErrorInput(input, message){
 function detialProfile(index){
       let list = getDataEmployersFromLocalStorageIfExist("employers");
       let emp = list[index];
-      console.log(typeof(emp));
-      let cardDetail = "";
       let experiencesHTML = emp.experiences.map(exp => `
       <div class="p-3 bg-light border rounded mb-2">
             <p class="mb-1 fw-semibold">${exp.Role}</p>
             <p class="mb-1 text-muted small">${exp.societe}</p>
-            <p class="mb-0 text-muted small">${exp.dateDebut} - ${exp.dateFin}</p>
+            <p class="mb-0 text-muted small">Depuis ${exp.dateDebut} Jusqu'à ${exp.dateFin}</p>
       </div>
 `).join('');
       document.getElementById("detailInfo").innerHTML = `
@@ -541,37 +542,7 @@ function detialProfile(index){
             </div>
       </div>
       `
-
-      console.log(emp);
-
 }
-
-// les regles metiers
-const zoneRules = {
-      reception: ["Receptionniste", "Manager", "Nettoyage"],
-      salleServeurs: ["Technici, en it", "Manager", "Nettoyage"],
-      salleSecurite: ["Agent de securite", "Manager", "Nettoyage"],
-      salleConference: ["Manager", "Receptionniste", "Technicien IT", "Agent de securite", "Nettoyage", "Devloppeur", "Comptable", "RH", "Commercial"],
-      sallePersonnel: ["Manager", "Receptionniste", "Technicien IT", "Agent de securite", "Nettoyage", "Devloppeur", "Comptable", "RH", "Commercial"],
-      salleArchives: ["Manager", "Receptionniste", "Technicien IT", "Agent de securite", "Devloppeur", "Comptable", "RH", "Commercial"]  
-};
-
-let reception = [];
-let salleServeurs = [];
-let salleSecurite = [];
-let salleConference = [];
-let sallePersonnel = [];
-let salleArchives = [];
-
-const zoneCapacities = {
-      reception: 2,
-      salleServeurs: 3,
-      salleSecurite: 4,
-      salleConference: 5,
-      sallePersonnel: 5,
-      salleArchives: 2
-};
-
 
 function assignerEmployeAZone(emp, zoneName) {
   // Vérifier si l’employé est éligible
@@ -584,43 +555,55 @@ function assignerEmployeAZone(emp, zoneName) {
       switch(zoneName) {
       case "reception":
             if(reception.length < zoneCapacities[zoneName]){
-                  reception.push(emp);                  
+                  reception.push(emp);
+                  saveDataEmployerToLocalStorage("reception", reception);               
             }
             else {
             console.log(`${zoneName} est pleine !`);
       }
             break;
       case "salleServeurs":
-            if(salleServeurs.length < zoneCapacities[zoneName])
+            if(salleServeurs.length < zoneCapacities[zoneName]){
                   salleServeurs.push(emp);
+                  saveDataEmployerToLocalStorage("salleServeurs", salleServeurs);    
+            }          
             else {
                   console.log(`${zoneName} est pleine !`);
             }
             break;
       case "salleSecurite":
-            if(salleSecurite.length < zoneCapacities[zoneName])
+            if(salleSecurite.length < zoneCapacities[zoneName]){
                   salleSecurite.push(emp);
+                  saveDataEmployerToLocalStorage("salleSecurite", salleSecurite);    
+            }
+
             else {
             console.log(`${zoneName} est pleine !`);
       }
             break;
       case "salleConference":
-            if(salleConference.length < zoneCapacities[zoneName])
+            if(salleConference.length < zoneCapacities[zoneName]){
                   salleConference.push(emp);
+                  saveDataEmployerToLocalStorage("salleConference", salleConference);    
+            }
             else {
                   console.log(`${zoneName} est pleine !`);
             }
             break;
       case "sallePersonnel":
-            if(sallePersonnel.length < zoneCapacities[zoneName])
+            if(sallePersonnel.length < zoneCapacities[zoneName]){
                   sallePersonnel.push(emp);
+                  saveDataEmployerToLocalStorage("sallePersonnel", sallePersonnel);    
+            }
             else {
                   console.log(`${zoneName} est pleine !`);
             }
             break;
       case "salleArchives":
-            if(salleArchives.length < zoneCapacities[zoneName])
+            if(salleArchives.length < zoneCapacities[zoneName]){
                   salleArchives.push(emp);
+                  saveDataEmployerToLocalStorage("salleArchives", salleArchives);    
+            }
             else {
                   console.log(`${zoneName} est pleine !`);
             }
@@ -632,9 +615,17 @@ function assignerEmployeAZone(emp, zoneName) {
       return true;
 }
 
+function supprimerEmployerAssigneDeListNonAssigne(employerListData, employerListZoneAssigner){
+      employerListData = employerListData.filter(empNonAssigne => !employerListZoneAssigner.some(empAssigneAuZone => empAssigneAuZone.role === empNonAssigne.role));
+      saveDataEmployerToLocalStorage("employers", employerListData);
+      renderCardsEmplyers(employerListData,"list-employe");
+      console.log(employerListData);
+      return employerListData;
+}
+
 function remplirToutesZonesExemple() {
-      const employerList = getDataEmployersFromLocalStorageIfExist("employers");
-      renderCardsEmplyers(employerList,"sdBar")
+      let employerList = getDataEmployersFromLocalStorageIfExist("employers");
+      // renderCardsEmplyers(employerList,"sdBar")
 
 
       employerList.forEach(emp => {
@@ -646,39 +637,64 @@ function remplirToutesZonesExemple() {
 
       document.getElementById("conferenceBtn").addEventListener("click", () =>{
             document.getElementById("nbrConferance").innerHTML = `
-            <span class="badge bg-light text-dark"><span id="nbrConferance" >${salleConference.length}</span>/${zoneCapacities.salleConference}</span>`
-            renderCardsEmplyers(salleConference, "salleConference")
+            <span class="badge bg-light text-dark"><span id="nbrConferance" >${salleConference.length}</span>/${zoneCapacities.salleConference}</span>`;
+            // employerList = employerList.filter(emp => !salleConference.some(empSalle => empSalle.role === emp.role));
+            // console.log(employerList);
+            employerList = supprimerEmployerAssigneDeListNonAssigne(employerList, salleConference);
+            console.log(employerList);
+            console.log(salleConference);
+            renderCardsEmplyers(salleConference, "salleConference");
+            nbrEmployersNonAsignes(employerList)
+
+
+            
       } );
 
       document.getElementById("receptionBtn").addEventListener("click",() =>{
             document.getElementById("nbrReception").innerHTML = `
             <span class="badge bg-light text-dark"><span id="nbrReception" >${reception.length}</span>/${zoneCapacities.reception}</span>`
+            // supprimerEmployerAssigneDeListNonAssigne(employerList, reception);
             renderCardsEmplyers(reception, "salleReception")
+            nbrEmployersNonAsignes(employerList)
+
       });
       document.getElementById("serveursBtn").addEventListener("click",() =>{
             document.getElementById("nbrServeurs").innerHTML = `
             <span class="badge bg-light text-dark"><span id="nbrServeurs" >${salleServeurs.length}</span>/${zoneCapacities.salleServeurs}</span>`
+            // supprimerEmployerAssigneDeListNonAssigne(employerList, salleServeurs);
             renderCardsEmplyers(salleServeurs, "salleServeurs");
+            nbrEmployersNonAsignes(employerList)
+
       });
 
       document.getElementById("securiteBtn").addEventListener("click",() =>{
             document.getElementById("nbrSecurite").innerHTML = `
             <span class="badge bg-light text-dark"><span id="nbrSecurite" >${salleSecurite.length}</span>/${zoneCapacities.salleSecurite}</span>`
+            // supprimerEmployerAssigneDeListNonAssigne(employerList, salleSecurite);
             renderCardsEmplyers(salleSecurite, "salleSecurite")
+            nbrEmployersNonAsignes(employerList)
+
       });
 
-      document.getElementById("receptionBtn").addEventListener("click",() =>{
-            document.getElementById("nbrReception").innerHTML = `
-            <span class="badge bg-light text-dark"><span id="nbrReception" >${reception.length}</span>/${zoneCapacities.reception}</span>`
-            renderCardsEmplyers(reception, "salleReception")
+      document.getElementById("personnelBtn").addEventListener("click",() =>{
+            document.getElementById("nbrPersonnel").innerHTML = `
+            <span class="badge bg-light text-dark"><span id="nbrPersonnel" >${sallePersonnel.length}</span>/${zoneCapacities.sallePersonnel}</span>`
+            // supprimerEmployerAssigneDeListNonAssigne(employerList, sallePersonnel);
+            renderCardsEmplyers(sallePersonnel, "sallePersonnel")
+            nbrEmployersNonAsignes(employerList)
+
       });
-      
-      document.getElementById("serveursBtn").addEventListener("click", renderCardsEmplyers(salleServeurs, "salleServeurs"))
-      document.getElementById("securiteBtn").addEventListener("click", renderCardsEmplyers(salleSecurite, "salleSecurite"))
-      document.getElementById("personnelBtn").addEventListener("click", renderCardsEmplyers(sallePersonnel, "sallePersonnel"))
-      document.getElementById("archiveBtn").addEventListener("click", renderCardsEmplyers(salleArchives, "salleArchive"))
 
+      document.getElementById("archiveBtn").addEventListener("click",() =>{
+            document.getElementById("nbrArchive").innerHTML = `
+            <span class="badge bg-light text-dark"><span id="nbrArchive" >${salleArchives.length}</span>/${zoneCapacities.salleArchives}</span>`
+            // supprimerEmployerAssigneDeListNonAssigne(employerList, salleArchives);
+            saveDataEmployerToLocalStorage("employers", employerList);
+            // renderCardsEmplyers(employerList,"list-employe");
+            renderCardsEmplyers(salleArchives, "salleArchive")
+            nbrEmployersNonAsignes(employerList)
 
+      });
 
 
 
@@ -690,5 +706,3 @@ function remplirToutesZonesExemple() {
       console.log("Salle Personnel:", sallePersonnel);
       console.log("Salle Archives:", salleArchives);
 }
-
-remplirToutesZonesExemple()
