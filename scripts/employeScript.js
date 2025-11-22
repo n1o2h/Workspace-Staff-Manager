@@ -460,15 +460,15 @@ function validerForm(nom) {
       return estvalid;
       }
 
-function resetForm(form){
+// function resetForm(form){
 
-      form.nomComplet.value ="";
-      // console.log(form.nomCompl)
-      form.email.value ="";
-      // form.selectRole=""
-      form.telephone.value ="";
-      form.photo.value = "";
-}
+//       form.nomComplet.value ="";
+//       // console.log(form.nomCompl)
+//       form.email.value ="";
+//       // form.selectRole=""
+//       form.telephone.value ="";
+//       form.photo.value = "";
+// }
 
 function onSuccessInput(input){
       let parentInput = input.parentElement;
