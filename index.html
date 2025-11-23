@@ -4,13 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content=" Workspace_Staff_Manager - Application de gestion des employés">
+    <meta name="keywords" content="equipes, employer, équipes">
+    <meta name="author" content="Workspace_Staff_Manager">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="styles/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Roboto:wght@400;500&display=swap"
         rel="stylesheet">
-
     <title>Workspace Staff Manager</title>
 </head>
 
@@ -28,104 +30,88 @@
         </nav>
     </header>
     <!--// HEADER //-->
-    <div>
+    <!-- INTERFACE GLOBAL -->
         <div class="plan row ">
+            <!-- SIDEBAR -->
             <div class=" col-12 col-md-5 col-lg-4 sidebar sdbar">
                 <div class="container-ajouter-emp">
                     <div class="ajout-content">
                         <h2><span><i class="fa-regular fa-user"></i></span> Employés non assignés</h2>
                         <span class="nbr-employe" id="nbrEmploye">0</span>
-
-
                     </div>
-                    <button type="button" class="btn btn-primary bnt-ajouter" data-bs-toggle="modal"
-                        data-bs-target="#ajoutEmployeModal"> + Ajouter un employé</button>
+                    <button type="button" class="btn btn-primary bnt-ajouter" data-bs-toggle="modal"data-bs-target="#ajoutEmployeModal"> 
+                        + Ajouter un employé
+                    </button>
                 </div>
                 <div class="container-search">
                     <form class="d-flex">
-                        <input class="form-control me-2 search" type="search" placeholder="Rechercher par nom ou role"
-                            aria-label="Search" id="searchRoleNom">
+                        <input class="form-control me-2 search" type="search" placeholder="Rechercher par nom ou role" aria-label="Search" id="searchRoleNom">
                     </form>
                 </div>
-                <div class="list-employe "  id="list-employe">
-                    <div class="AucunEmployerExistCard">
-                        <i class="fa-regular fa-user"></i>
-                        <h4>Aucun employe exist</h4>
-                    </div>
+                <div class="list-employe" id="list-employe">
                 </div>
             </div>
+            <!-- // SIDEBAR // -->
+            <!-- PLAN D'ETAGES -->
             <div class=" col container my-4 planZone">
-
                 <h3 class="mb-4">Plan d'étage</h3>
                 <p class="text-muted">Glissez-déposez les employés dans les zones appropriées</p>
-
                 <div class="row g-4">
-
-                    <!-- Salle de conférence -->
+                    <!-- SALLE DE CONFERANCE -->
                     <div class="col-12 col-md-12 col-lg-6 p-4">
                         <div class="room-card p-3 rounded border" style="background: #e0fbeb;">
                             <h5 class="fw-bold">Salle de conférence</h5>
-                            <span id="nbrConferance"> </span>
-
+                            <span id="nbrConferance"></span>
                             <div class="text-center mt-3" id="salleConference">
                                 <p class="text-muted">Aucun</p>
                             </div>
-
-                            <button class="btn btn-outline-success w-100 mt-3" id="conferenceBtn" data-bs-toggle="modal" data-bs-target="#exampleModal">+ Assigner</button>
+                            <button class="btn btn-outline-success w-100 mt-3"id="conferenceBtn"data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                + Assigner
+                            </button>
                         </div>
                     </div>
-
-                    <!-- Réception -->
+                    <!-- // SALLE DE CONFERANCE // -->
+                    <!-- RECEPTION -->
                     <div class=" col-12 col-md-12 col-lg-6 p-4">
                         <div class="room-card p-3 rounded border" style="background: #fce6e7;">
                             <h5 class="fw-bold">Réception</h5>
                             <span id="nbrReception"> </span>
-
-
-
                             <div class="text-center mt-3" id="salleReception">
-
                                 <p class="text-muted">Aucun</p>
                             </div>
-                            
-
-                            <button class="btn btn-outline-danger w-100 mt-3"  id="receptionBtn"  >+ Assigner</button>
+                            <button class="btn btn-outline-danger w-100 mt-3"  id="receptionBtn">
+                                + Assigner
+                            </button>
                         </div>
                     </div>
-
-                    <!-- Salle des serveurs -->
+                    <!-- // RECEPTION // -->
+                    <!-- SALLE DE SERVEURS -->
                     <div class="col-12 col-md-12 col-lg-6 p-4">
                         <div class="room-card p-3 rounded border" style="background: #fce6e7">
                             <h5 class="fw-bold">Salle des serveurs</h5>
                             <span id="nbrServeurs"> </span>
-
-
                             <div class="text-center mt-3 ii" id="salleServeurs">
-
                                 <p class="text-muted">Aucun</p>
                             </div>
-<!-- data-bs-toggle="modal" data-bs-target="#exampleModal" -->
-                            <button class="btn btn-outline-danger w-100 mt-3" id="serveursBtn" >+ Assigner</button>
+                            <button class="btn btn-outline-danger w-100 mt-3" id="serveursBtn" >
+                                + Assigner
+                            </button>
                         </div>
                     </div>
-
-                    <!-- Salle de sécurité -->
+                    <!-- // SALLE DE SERVEURS // -->
+                    <!-- SALLE DE SECURITE -->
                     <div class="col-12 col-md-12 col-lg-6 p-4">
                         <div class="room-card p-3 rounded border " style="background: #fce6e7">
                             <h5 class="fw-bold">Salle de sécurité</h5>
                             <span id="nbrSecurite"> </span>
-
-
                             <div class="text-center mt-3" id="salleSecurite">
-
                                 <p class="text-muted">Aucun</p>
                             </div>
-<!-- data-bs-toggle="modal" data-bs-target="#exampleModal" -->
                             <button class="btn btn-outline-danger w-100 mt-3"  id="securiteBtn" >+ Assigner</button>
                         </div>
                     </div>
-
-                    <!-- Salle du personnel -->
+                    <!-- // SALLE DE SECURITE // -->
+                    <!-- SALLE DU PERSONNEL -->
                     <div class="col-12 col-md-12 col-lg-6 p-4">
                         <div class="room-card p-3 rounded border" style="background: #e0fbeb">
                             <h5 class="fw-bold">Salle du personnel</h5>
@@ -134,61 +120,27 @@
                             <div class="text-center mt-3" id="sallePersonnel">
                                 <p class="text-muted">Aucun</p>
                             </div>
-<!-- data-bs-toggle="modal" data-bs-target="#exampleModal" -->
                             <button class="btn btn-outline-success w-100 mt-3" id="personnelBtn" >+ Assigner</button>
                         </div>
                     </div>
-
-                    <!-- Salle d’archives -->
+                    <!-- // SALLE DU PERSONNEL // -->
+                    <!-- SALLE D'ARCHIVE -->
                     <div class="col-12 col-md-12 col-lg-6 p-4">
                         <div class="room-card p-3 rounded border" style="background: #fce6e7">
                             <h5 class="fw-bold">Salle d'archives</h5>
                             <span id="nbrArchive"> </span>
-
                             <div class="text-center mt-3" id="salleArchive">
                                 <p class="text-muted">Aucun</p>
                             </div>
-                            <!-- data-bs-toggle="modal" data-bs-target="#exampleModal" -->
-                            
                             <button class="btn btn-outline-danger w-100 mt-3" id="archiveBtn" >+ Assigner</button>
                         </div>
                     </div>
-
+                    <!-- // SALLE D'ARCHIVE // -->
                 </div>
             </div>
-
         </div>
-    </div>
-
-    <!-- modal de listes des employer -->
-    <!-- Button trigger modal -->
-    <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    Launch demo modal
-    </button> -->
-
-    <!-- Modal -->
-    <!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Listes des Employers</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body" id="sdBar">
-            
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary"> +Assigner </button>
-        </div>
-        </div>
-    </div>
-    </div> -->
-
-
-
-
-    <!-- modal d'ajout d'employe -->
+    <!-- // INTERFACE GLOBAL // -->
+    <!-- MODAL D'AJOUT D'EMPLOYE -->
     <div class="modal fade" id="ajoutEmployeModal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
@@ -207,7 +159,6 @@
                         <label for="selectRole" class="form-label">Role</label>
                         <span></span>
                         <select class="form-select" name="selectRole" id="selectRole" onchange="getSelectedValue(this)">
-                            <!-- <option selected>Choisie un role</option> -->
                             <option value="Developpeur" selected>Développeur</option>
                             <option value="Receptionniste">Réceptionniste</option>
                             <option value="Technicien it">Technicien IT</option>
@@ -238,7 +189,6 @@
                         <span></span>
                         <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
                             id="imageArea" alt="image profile">
-
                     </div>
                     <fieldset class="modal-header">
                         <fieldset class="modal-title" id="experiences">Expériences professionnelles</fieldset>
@@ -253,143 +203,47 @@
                         <button type="reset" class="btn btn-secondary w-100" data-bs-dismiss="modal">Annuler</button>
                     </div>
                 </form>
-
             </div>
         </div>
     </div>
-
-    <!-- card de profile detailler -->
-    <!-- 
-    
+    <!-- // MODAL D'AJOUT D'EMPLOYE // -->
+    <!-- MODAL MODIFIER PROFILLE -->
+    <div class="modal fade" id="editEmployerModal" >
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <fieldset class="modal-header">
-                    <fieldset class="modal-title" id="exampleModalLabel">Ajouter un nouvel employé</fieldset>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <fieldset class="modal-title">Modifier l'employé</fieldset>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </fieldset>
-                <form class="modal-body" name="editEmp" action="">
+                <form class="modal-body" name="editEmp">
+                    <input type="hidden" name="id">
                     <div class="mb-3">
-                        <label for="nomComplet" class="form-label">Nom complet</label>
-                        <input type="text" class="form-control" id="nomComplet" name="nomComplet"
-                            placeholder="Nohaila Ait Hammad">
-                        <span></span>
+                        <label class="form-label">Nom complet</label>
+                        <input type="text" class="form-control" name="editNomComplet">
                     </div>
                     <div class="mb-3">
-                        <label for="selectRole" class="form-label">Role</label>
-                        <span></span>
-                        <select class="form-select" name="selectRole" id="selectRole" onchange="toggle(this)">
-                            <option selected>Choisie un role</option>
-                            <option value="Developpeur" selected>Développeur</option>
-                            <option value="Receptionniste">Réceptionniste</option>
-                            <option value="Technicien it">Technicien IT</option>
-                            <option value="Agent de securite">Agent de sécurité</option>
-                            <option value="Manager">Manager</option>
-                            <option value="Nettoyage">Nettoyage</option>
-                            <option value="Archiviste">Archiviste</option>
-                            <option value="Comptable">Comptable</option>
-                            <option value="RH">RH</option>
-                            <option value="Commercial">Commercial</option>
-                        </select>
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" name="editEmail">
                     </div>
                     <div class="mb-3">
-                        <label for="email" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
-                        <span></span>
+                        <label class="form-label">Téléphone</label>
+                        <input type="text" class="form-control" name="editTelephone">
                     </div>
                     <div class="mb-3">
-                        <label for="telephone" class="form-label">Télephone</label>
-                        <input type="text" class="form-control" id="telephone" name="telephone"
-                            placeholder="+212600000000">
-                        <span></span>
-                    </div>
-                    <div class="mb-3">
-                        <label for="photo" class="form-label">Photo (URL)</label>
-                        <input type="text" class="form-control" id="photo" name="photo"
-                            placeholder="https://example.com/photo.jpg">
-                        <span></span>
-                        <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
-                            id="imageArea">
-
-                    </div>
-                    <fieldset class="modal-header">
-                        <fieldset class="modal-title" id="experiences">Expériences professionnelles</fieldset>
-                        <button type="button" id="ajouterExperience" class="btn btn-secondary"> + Ajouter</button>
-                    </fieldset>
-                    <div id="experiencesListDynamicForm">
+                        <label class="form-label">Photo (URL)</label>
+                        <input type="text" class="form-control" name="editPhoto">
+                        <!-- <img src="" id="editImagePreview" class="mt-2"  style="border-radius: 50%; width: 50px;"> -->
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" id="ajouter" class="ajouterComptetnece hideBnt btn btn-info w-100">
-                            Ajouter
-                            l'employe</button>
+                        <button type="submit" class="btn btn-info w-100" data-bs-dismiss="modal">Sauvegarder</button>
                         <button type="reset" class="btn btn-secondary w-100" data-bs-dismiss="modal">Annuler</button>
                     </div>
                 </form>
-
             </div>
         </div>
-    </div> -->
-
-    <!-- modal modifier profile -->
-    <div class="modal fade" id="editEmployerModal" >
-    <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-
-            <fieldset class="modal-header">
-                <fieldset class="modal-title">Modifier l'employé</fieldset>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </fieldset>
-
-            <form class="modal-body" name="editEmp">
-
-                <input type="hidden" name="id">
-
-                <div class="mb-3">
-                    <label class="form-label">Nom complet</label>
-                    <input type="text" class="form-control" name="editNomComplet">
-                </div>
-<!-- 
-                <div class="mb-3">
-                    <label class="form-label">Rôle</label>
-                    <select class="form-select" name="editRole">
-                        <option value="Developpeur">Développeur</option>
-                        <option value="Receptionniste">Réceptionniste</option>
-                        <option value="Technicien it">Technicien IT</option>
-                        <option value="Agent de securite">Agent de sécurité</option>
-                        <option value="Manager">Manager</option>
-                        <option value="Nettoyage">Nettoyage</option>
-                        <option value="Archiviste">Archiviste</option>
-                        <option value="Comptable">Comptable</option>
-                        <option value="RH">RH</option>
-                        <option value="Commercial">Commercial</option>
-                    </select>
-                </div> -->
-
-                <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-control" name="editEmail">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Téléphone</label>
-                    <input type="text" class="form-control" name="editTelephone">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Photo (URL)</label>
-                    <input type="text" class="form-control" name="editPhoto">
-                    <!-- <img src="" id="editImagePreview" class="mt-2"  style="border-radius: 50%; width: 50px;"> -->
-                </div>
-
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-info w-100" data-bs-dismiss="modal">Sauvegarder</button>
-                    <button type="reset" class="btn btn-secondary w-100" data-bs-dismiss="modal">Annuler</button>
-                </div>
-            </form>
-        </div>
     </div>
-</div>
-
-<!-- Modal profile detailler -->
+<!-- // MODAL MODIFIER PROFILLE // -->
+<!-- MODAL PROFILE DETAILLE -->
     <div class="modal fade" id="profileDetailler"  aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -405,15 +259,12 @@
         </div>
     </div>
     </div>
-
-
-
+<!-- // MODAL PROFILE DETAILLE // -->
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
-    <!-- script Employe JS  -->
-
+    <!-- SCRIPT EMPLOYE JS  -->
     <script src="scripts/employeScript.js"></script>
     <script src="https://kit.fontawesome.com/a680a19743.js" crossorigin="anonymous"></script>
 </body>
