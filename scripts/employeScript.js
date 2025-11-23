@@ -1,13 +1,13 @@
-//  les regles metiers
+//  LES REGLES METIERS
 const zoneRules = {
       reception: ["Receptionniste", "Manager", "Nettoyage"],
-      salleServeurs: ["Technicien it", "Manager", "Nettoyage"],
-      salleSecurite: ["Agent de securite", "Manager", "Nettoyage"],
+      salleServeurs: ["Technicien it", "Manager", "Nettoyage" , "Developpeur"],
+      salleSecurite: ["Agent de securite", "Manager", "Nettoyage", "Developpeur"],
       salleConference: ["Manager", "Receptionniste", "Technicien it", "Agent de securite", "Nettoyage", "Developpeur", "Comptable", "RH", "Commercial", "Archiviste", "RH"],
       sallePersonnel: ["Manager", "Receptionniste", "Technicien it", "Agent de securite", "Nettoyage", "Developpeur", "Comptable", "RH", "Commercial", "Archiviste", "RH"],
       salleArchives: ["Manager", "Receptionniste", "Technicien it", "Agent de securite", "Developpeur", "Comptable", "RH", "Commercial", "Archiviste", "RH"]  
 };
-
+// LES ZONES
 let reception = [];
 let salleServeurs = [];
 let salleSecurite = [];
@@ -23,13 +23,22 @@ const zoneCapacities = {
       sallePersonnel: 5,
       salleArchives: 2
 };
+function initApp(){
 
-loadDataEmplyer();
+      loadDataEmplyer();
+
+      employerFiltreParNomOuRole();
+
+      document.getElementById("ajouterExperience").addEventListener("click", () => {
+      addExperience();
+      });
+
+      remplirToutesZones();
+}
 
 function loadDataEmplyer() {
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
       renderCardsEmplyers(employerList,"list-employe");
-      remplirToutesZonesExemple();
 }
 
 function getDataEmployersFromLocalStorageIfExist(keyData) {
@@ -56,38 +65,22 @@ async function loadDataJson(file) {
       }
       saveDataEmployerToLocalStorage("employers", employerList);
 }
+
+function saveDataEmployerToLocalStorage(keyData, dataList) {
+      localStorage.setItem(keyData, JSON.stringify(dataList));
+}
+
+
+function renderCardsEmplyers(employerList, nom) {
+      nbrEmployersNonAsignes(employerList);
+      document.getElementById(nom).innerHTML =
+      renderListEmployers(employerList);
+}
+
 function nbrEmployersNonAsignes(employerList){
       document.getElementById("nbrEmploye").innerHTML = `
       <span>${employerList.length}</span>`
 
-}
-
-function saveDataEmployerToLocalStorage(keyData, dataList) {
-      localStorage.setItem(keyData, JSON.stringify(dataList));
-
-}
-
-// renderCardsEmplyers(employes);
-function renderCardsEmplyers(employerList, nom) {
-      nbrEmployersNonAsignes(employerList);
-      if(!employerList.length){
-            document.getElementById(nom).innerHTML = `
-                  <div class="AucunEmployerExistCard">
-                        <i class="fa-regular fa-user"></i>
-                        <h4>Aucun employe exist</h4>
-                  </div>
-            `
-      }
-      document.getElementById(nom).innerHTML =
-      renderListEmployers(employerList);
-
-      // affiche details
-      document.querySelectorAll(".employeeCard").forEach(card => {
-      card.addEventListener("click", () => {
-            let index = card.getAttribute("data-index");
-            detialProfile(index);
-      });
-      });
 }
 
 function renderListEmployers(employes) {
@@ -98,10 +91,9 @@ function renderListEmployers(employes) {
       return cardListEmploye;
 }
 
-// data-bs-toggle="modal"  data-bs-target="#afficherProfile"
 function renderCard(employe, index) {
       return `
-            <div class="card employeeCard mb-3" data-index="${index}" >
+            <div class="card employeeCard mb-3"  >
             ${renderDetailCard(employe, index)}
             </div>
       `;
@@ -122,7 +114,6 @@ return `
                   data-bs-toggle="modal"
                   data-bs-target="#editEmployerModal"
                   onclick="editEmployer(${index})"></i>
-
                   <i class="fa-solid fa-trash" onclick="supprimerEmployer(${index})"
                   ></i>
             </div>
@@ -130,18 +121,66 @@ return `
       `;
 }
 
-function supprimerEmployer(index){
-      // console.log(index);
-      let employerList = getDataEmployersFromLocalStorageIfExist("employers");
-      employerList.splice(index, 1);
-      saveDataEmployerToLocalStorage("employers", employerList);
-      renderCardsEmplyers(employerList, "list-employe");
+function detialProfile(index){
+      let list = getDataEmployersFromLocalStorageIfExist("employers");
+      let emp = list[index];
+      let experiencesHTML = emp.experiences.map(exp => `
+      <div class="p-3 bg-light border rounded mb-2">
+            <p class="mb-1 fw-semibold">${exp.Role}</p>
+            <p class="mb-1 text-muted small">${exp.societe}</p>
+            <p class="mb-0 text-muted small">Depuis ${exp.dateDebut} Jusqu'à ${exp.dateFin}</p>
+      </div>
+      `).join(''); 
+
+      document.getElementById("detailInfo").innerHTML = `
+            <!-- Header -->
+            <div class="position-relative">
+
+            <!-- Gradient Header -->
+                  <div class="rounded-top" style="height: 150px; background: linear-gradient(135deg, #1D4ED8, #7C3AED);"></div>
+
+            <!-- Profile Image -->
+                  <div class="text-center" style="margin-top: -60px;">
+                        <img src=${emp.photo} 
+                        alt="photo profile" 
+                        class="rounded-circle border border-white shadow" 
+                        style="width: 120px; height: 120px; object-fit: cover;">
+                  </div>
+
+            <!-- Name & Role -->
+                  <div class="text-center mt-2 mb-4">
+                        <h4 class="text-dark">${emp.nom}</h4>
+                        <p class="text-primary mb-0">${emp.role}</p>
+                  </div>
+            </div>
+            <!-- Content -->
+            <div class="modal-body">
+
+                  <!-- Contact Info -->
+                  <h5>Informations de contact</h5>
+                  <div class="mb-3">
+                        <p class="mb-1"><i class="text-primary"></i> 
+                              <a href="#" class="text-decoration-none text-primary">${emp.email}</a>
+                        </p>
+                        <p class="mb-1"><i class="text-primary"></i> 
+                              <a href="#" class="text-decoration-none text-primary">${emp.telephone}</a>
+                        </p>
+                  </div>
+
+                  <!-- Experiences -->
+                  <h5 class="mt-4">Expériences professionnelles</h5>
+                  <div class="row g-3">
+                        <div class="col-12">
+                              ${experiencesHTML}
+                        </div>
+                  </div>
+            </div>
+      `
 }
 
 function editEmployer(index) {
       let list = getDataEmployersFromLocalStorageIfExist("employers");
       let emp = list[index];
-
       let form = document.forms["editEmp"];
 
       form.id.value = index;
@@ -149,7 +188,6 @@ function editEmployer(index) {
       form.editEmail.value = emp.email;
       form.editTelephone.value = emp.telephone;
       form.editPhoto.value = emp.photo;
-      form.editRole.value = emp.role;
       document.getElementById("editImagePreview").src = emp.photo;
 }
 
@@ -168,18 +206,182 @@ document.forms["editEmp"].addEventListener("submit", event =>{
             renderCardsEmplyers(list, "list-employe");
 })
 
-// fonction qui select quel option est il
-let selectrole = document.getElementById("selectRole");
-
-function getSelectedValue(el) {
-      var value = el.options[el.selectedIndex].value;
-      return value;
+function supprimerEmployer(index){
+      let employerList = getDataEmployersFromLocalStorageIfExist("employers");
+      employerList.splice(index, 1);
+      saveDataEmployerToLocalStorage("employers", employerList);
+      renderCardsEmplyers(employerList, "list-employe");
 }
 
-// ajout du forulaire dynamic des experiencs
-document.getElementById("ajouterExperience").addEventListener("click", () => {
-      addExperience();
+// sauvgardement deu formulaire apres la verification reel de chaque champ en utilisant l'evenement blur
+document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
+
+      let form = event.target;
+
+      if (validerForm("ajouterEmployer")) {
+
+            let employer = {
+                  nom: form.nomComplet.value,
+                  role: getSelectedValue(selectrole),
+                  email: form.email.value,
+                  photo: form.photo.value,
+                  telephone: form.telephone.value,
+                  experiences: []
+            };
+
+            // Récupérer les expériences dynamiques
+            let societes = form.societe;
+            let roles = form.Role;
+            let datesDebut = form.dateDebut;
+            let datesFin = form.dateFin;
+
+            if (societes) {
+                  for (let i = 0; i < societes.length; i++) {
+                  employer.experiences.push({
+                        societe: societes[i].value,
+                        Role: roles[i].value,
+                        dateDebut: datesDebut[i].value,
+                        dateFin: datesFin[i].value
+                  });
+                  }
+            }
+
+            ajouterEmployerToLocalStorage(employer);
+            loadDataEmplyer();
+      } 
+      else {
+            event.preventDefault();
+      }
 });
+
+function validerForm(nom) {
+      let form = document.forms[nom];
+      let estvalid = true;
+
+      // VALIDATION NOM //
+      if (!form.nomComplet.value.trim().match(/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{3,}$/)) {
+            onErrorInput(form.nomComplet, "Nom complet non valide");
+            estvalid = false;
+      } else {
+            onSuccessInput(form.nomComplet);
+      }
+
+      //  VALIDATION EMAIL  //
+      if (!form.email.value.trim().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+            onErrorInput(form.email, "Email non valide");
+            estvalid = false;
+      } else {
+            onSuccessInput(form.email);
+      }
+
+      //  VALIDATION TELEPHONE  //
+      if (!form.telephone.value.trim().match(/^(\+?\d{1,3}[- ]?)?\d{9,10}$/)) {
+            onErrorInput(form.telephone, "Téléphone non valide");
+            estvalid = false;
+      } else {
+            onSuccessInput(form.telephone);
+      }
+
+      //  VALIDATION ROLE  //
+      let roleValue = selectrole.value;
+      if (!roleValue) {
+      onErrorInput(selectrole, "Veuillez choisir un rôle");
+            estvalid = false;
+      } else {
+      onSuccessInput(selectrole);
+}
+
+      //  VALIDATION PHOTO  //
+      let photo = form.photo.value.trim();
+      if (photo === "") {
+            form.photo.value =
+                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png";
+      } else if (!photo.match(/^https?:\/\/.+/)) {
+            onErrorInput(form.photo, "URL de photo invalide");
+            estvalid = false;
+      } else {
+            onSuccessInput(form.photo);
+      }
+
+
+      //VALIDATION DES EXPERIENCES DYNAMIQUES
+
+      let societes = form.societe;
+            let roles = form.Role;
+            let datesDebut = form.dateDebut;
+            let datesFin = form.dateFin;
+
+      // Aucun bloc d'expérience 
+      if (!societes) return estvalid;
+
+      // Si une seule expérience on la transformer en tableau pour uniformité
+      if (societes && !societes.length) {
+            societes = [societes];
+            roles = [roles];
+            datesDebut = [datesDebut];
+            datesFin = [datesFin];
+}
+
+      for (let i = 0; i < societes.length; i++) {
+
+            // === Société ===
+            if (societes[i].value.trim() === "") {
+                  onErrorInput(societes[i], "Société obligatoire");
+                  estvalid = false;
+            } else {
+                  onSuccessInput(societes[i]);
+            }
+
+            // === Role ===
+            if (roles[i].value.trim() === "") {
+                  onErrorInput(roles[i], "Rôle obligatoire");
+                  estvalid = false;
+            } else {
+                  onSuccessInput(roles[i]);
+            }
+
+            // === Dates ===
+            if (datesDebut[i].value === "") {
+                  onErrorInput(datesDebut[i], "Date début obligatoire");
+                  estvalid = false;
+            } else {
+                  onSuccessInput(datesDebut[i]);
+            }
+
+            if (datesFin[i].value === "") {
+                  onErrorInput(datesFin[i], "Date fin obligatoire");
+                  estvalid = false;
+            } else {
+                  onSuccessInput(datesFin[i]);
+            }
+
+            // === Date cohérente ===
+            if (datesDebut[i].value && datesFin[i].value) {
+                  if (new Date(datesDebut[i].value) > new Date(datesFin[i].value)) {
+                  onErrorInput(datesFin[i], "La date de fin doit être ≥ date début");
+                  estvalid = false;
+                  }
+            }
+      }
+
+      return estvalid;
+}
+
+function onSuccessInput(input){
+      let parentInput = input.parentElement;
+      let messageElm = parentInput.querySelector("span");
+      messageElm.style.display ="none";
+      messageElm.innerText ="";
+}
+
+function onErrorInput(input, message){
+      let parentInput = input.parentElement;
+      let messageElm = parentInput.querySelector("span");
+      messageElm.style.display ="block";
+      messageElm.innerText =message;
+}
+
+
 
 function addExperience() {
       const container = document.getElementById("experiencesListDynamicForm");
@@ -255,60 +457,17 @@ function validateField(input) {
       }
 }
 
-// sauvgardement deu formulaire apres la verification reel de chaque champ en utilisant l'evenement blur
-document.forms["ajouterEmployer"].addEventListener("submit", (event) => {
+let selectrole = document.getElementById("selectRole");
 
-      let form = event.target;
-
-      if (validerForm("ajouterEmployer")) {
-
-            let employer = {
-                  nom: form.nomComplet.value,
-                  role: getSelectedValue(selectrole),
-                  email: form.email.value,
-                  photo: form.photo.value,
-                  telephone: form.telephone.value,
-                  experiences: []
-            };
-
-
-            // Récupérer les expériences dynamiques
-            let societes = form.societe;
-            let roles = form.Role;
-            let datesDebut = form.dateDebut;
-            let datesFin = form.dateFin;
-
-            if (societes) {
-                  for (let i = 0; i < societes.length; i++) {
-                  employer.experiences.push({
-                        societe: societes[i].value,
-                        Role: roles[i].value,
-                        dateDebut: datesDebut[i].value,
-                        dateFin: datesFin[i].value
-                  });
-                  }
-            }
-            // Sauvegarder
-            ajouterEmployerToLocalStorage(employer);
-            form.reset();
-            loadDataEmplyer();
-            // Fermer le modal Bootstrap correctement
-            // const modalEl = document.getElementById("ajoutEmployeModal");
-            // const modal = bootstrap.Modal.getInstance(modalEl);
-            // modal.hide();
-
-      } 
-      else {
-            event.preventDefault();
-      }
-      });
+function getSelectedValue(el) {
+      var value = el.options[el.selectedIndex].value;
+      return value;
+}
 
 function ajouterEmployerToLocalStorage(employer) {
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
       employerList.push(employer);
       saveDataEmployerToLocalStorage("employers", employerList);
-      // data katb9a kol mra t3awd tloda o ywli overriding o ila mdrthach kykhs nrefrecher la page
-      // loadDataEmplyer();
 }
 
 // Prévisualisation de la photo en temps réel
@@ -322,7 +481,8 @@ document.getElementById("photo").addEventListener("input", function(event) {
             imageArea.setAttribute("src", "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png");
       }
       });
-      
+
+
 function employerFiltreParNomOuRole(){
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
       document.getElementById("searchRoleNom").addEventListener("input", e => {
@@ -343,205 +503,6 @@ function employerFiltreParNomOuRole(){
                         </div>`;
             }
       });
-}
-
-employerFiltreParNomOuRole();
-
-function validerForm(nom) {
-      let form = document.forms[nom];
-      let estvalid = true;
-
-      // ===== VALIDATION NOM ===== //
-      if (!form.nomComplet.value.trim().match(/^[A-Za-zÀ-ÖØ-öø-ÿ\s'-]{3,}$/)) {
-            onErrorInput(form.nomComplet, "Nom complet non valide");
-            estvalid = false;
-      } else {
-            onSuccessInput(form.nomComplet);
-      }
-
-      // ===== VALIDATION EMAIL ===== //
-      if (!form.email.value.trim().match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-            onErrorInput(form.email, "Email non valide");
-            estvalid = false;
-      } else {
-            onSuccessInput(form.email);
-      }
-
-      // ===== VALIDATION TELEPHONE ===== //
-      if (!form.telephone.value.trim().match(/^(\+?\d{1,3}[- ]?)?\d{9,10}$/)) {
-            onErrorInput(form.telephone, "Téléphone non valide");
-            estvalid = false;
-      } else {
-            onSuccessInput(form.telephone);
-      }
-
-      // ===== VALIDATION ROLE ===== //
-      let roleValue = selectrole.value;
-      if (!roleValue) {
-      onErrorInput(selectrole, "Veuillez choisir un rôle");
-            estvalid = false;
-      } else {
-      onSuccessInput(selectrole);
-}
-
-      // ===== VALIDATION PHOTO ===== //
-      let photo = form.photo.value.trim();
-      if (photo === "") {
-            form.photo.value =
-                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png";
-      } else if (!photo.match(/^https?:\/\/.+/)) {
-            onErrorInput(form.photo, "URL de photo invalide");
-            estvalid = false;
-      } else {
-            onSuccessInput(form.photo);
-      }
-
-
-      //VALIDATION DES EXPERIENCES DYNAMIQUES
-
-      let societes = form.societe;
-            let roles = form.Role;
-            let datesDebut = form.dateDebut;
-            let datesFin = form.dateFin;
-
-      // Aucun bloc d'expérience 
-      if (!societes) return estvalid;
-
-      // Si une seule expérience on la transformer en tableau pour uniformité
-      if (societes && !societes.length) {
-            societes = [societes];
-            roles = [roles];
-            datesDebut = [datesDebut];
-            datesFin = [datesFin];
-}
-
-      for (let i = 0; i < societes.length; i++) {
-
-            // === Société ===
-            if (societes[i].value.trim() === "") {
-                  onErrorInput(societes[i], "Société obligatoire");
-                  estvalid = false;
-            } else {
-                  onSuccessInput(societes[i]);
-            }
-
-            // === Role ===
-            if (roles[i].value.trim() === "") {
-                  onErrorInput(roles[i], "Rôle obligatoire");
-                  estvalid = false;
-            } else {
-                  onSuccessInput(roles[i]);
-            }
-
-            // === Dates ===
-            if (datesDebut[i].value === "") {
-                  onErrorInput(datesDebut[i], "Date début obligatoire");
-                  estvalid = false;
-            } else {
-                  onSuccessInput(datesDebut[i]);
-            }
-
-            if (datesFin[i].value === "") {
-                  onErrorInput(datesFin[i], "Date fin obligatoire");
-                  estvalid = false;
-            } else {
-                  onSuccessInput(datesFin[i]);
-            }
-
-            // === Date cohérente ===
-            if (datesDebut[i].value && datesFin[i].value) {
-                  if (new Date(datesDebut[i].value) > new Date(datesFin[i].value)) {
-                  onErrorInput(datesFin[i], "La date de fin doit être ≥ date début");
-                  estvalid = false;
-                  }
-            }
-      }
-
-      return estvalid;
-      }
-
-// function resetForm(form){
-
-//       form.nomComplet.value ="";
-//       // console.log(form.nomCompl)
-//       form.email.value ="";
-//       // form.selectRole=""
-//       form.telephone.value ="";
-//       form.photo.value = "";
-// }
-
-function onSuccessInput(input){
-      let parentInput = input.parentElement;
-      let messageElm = parentInput.querySelector("span");
-      messageElm.style.display ="none";
-      messageElm.innerText ="";
-}
-
-function onErrorInput(input, message){
-      let parentInput = input.parentElement;
-      let messageElm = parentInput.querySelector("span");
-      messageElm.style.display ="block";
-      messageElm.innerText =message;
-}
-
-// ajouter detial profile
-function detialProfile(index){
-      let list = getDataEmployersFromLocalStorageIfExist("employers");
-      let emp = list[index];
-      let experiencesHTML = emp.experiences.map(exp => `
-      <div class="p-3 bg-light border rounded mb-2">
-            <p class="mb-1 fw-semibold">${exp.Role}</p>
-            <p class="mb-1 text-muted small">${exp.societe}</p>
-            <p class="mb-0 text-muted small">Depuis ${exp.dateDebut} Jusqu'à ${exp.dateFin}</p>
-      </div>
-`).join('');
-      document.getElementById("detailInfo").innerHTML = `
-            <!-- Header -->
-            <div class="position-relative">
-
-            <!-- Gradient Header -->
-                  <div class="rounded-top" style="height: 150px; background: linear-gradient(135deg, #1D4ED8, #7C3AED);"></div>
-
-            <!-- Profile Image -->
-                  <div class="text-center" style="margin-top: -60px;">
-                        <img src=${emp.photo} 
-                        alt="photo profile" 
-                        class="rounded-circle border border-white shadow" 
-                        style="width: 120px; height: 120px; object-fit: cover;">
-                  </div>
-
-            <!-- Name & Role -->
-                  <div class="text-center mt-2 mb-4">
-                        <h4 class="text-dark">${emp.nom}</h4>
-                        <p class="text-primary mb-0">${emp.role}</p>
-                  </div>
-            </div>
-
-            <!-- Content -->
-            <div class="modal-body">
-
-            <!-- Contact Info -->
-            <h5>Informations de contact</h5>
-            <div class="mb-3">
-            <p class="mb-1"><i class="bi bi-envelope-fill text-primary"></i> 
-                  <a href="#" class="text-decoration-none text-primary">${emp.email}</a>
-            </p>
-            <p class="mb-1"><i class="bi bi-telephone-fill text-primary"></i> 
-                  <a href="#" class="text-decoration-none text-primary">${emp.telephone}</a>
-            </p>
-            </div>
-
-            <!-- Experiences -->
-            <h5 class="mt-4">Expériences professionnelles</h5>
-            <div class="row g-3">
-            <div class="col-12">
-                  ${experiencesHTML}
-            </div>
-            </div>
-
-            </div>
-      </div>
-      `
 }
 
 function assignerEmployeAZone(emp, zoneName) {
@@ -623,10 +584,8 @@ function supprimerEmployerAssigneDeListNonAssigne(employerListData, employerList
       return employerListData;
 }
 
-function remplirToutesZonesExemple() {
+function remplirToutesZones() {
       let employerList = getDataEmployersFromLocalStorageIfExist("employers");
-      // renderCardsEmplyers(employerList,"sdBar")
-
 
       employerList.forEach(emp => {
       Object.keys(zoneRules).forEach(zone => {
@@ -638,16 +597,11 @@ function remplirToutesZonesExemple() {
       document.getElementById("conferenceBtn").addEventListener("click", () =>{
             document.getElementById("nbrConferance").innerHTML = `
             <span class="badge bg-light text-dark"><span id="nbrConferance" >${salleConference.length}</span>/${zoneCapacities.salleConference}</span>`;
-            // employerList = employerList.filter(emp => !salleConference.some(empSalle => empSalle.role === emp.role));
-            // console.log(employerList);
             employerList = supprimerEmployerAssigneDeListNonAssigne(employerList, salleConference);
             console.log(employerList);
             console.log(salleConference);
             renderCardsEmplyers(salleConference, "salleConference");
-            nbrEmployersNonAsignes(employerList)
-
-
-            
+            nbrEmployersNonAsignes(employerList)            
       } );
 
       document.getElementById("receptionBtn").addEventListener("click",() =>{
@@ -661,16 +615,13 @@ function remplirToutesZonesExemple() {
       document.getElementById("serveursBtn").addEventListener("click",() =>{
             document.getElementById("nbrServeurs").innerHTML = `
             <span class="badge bg-light text-dark"><span id="nbrServeurs" >${salleServeurs.length}</span>/${zoneCapacities.salleServeurs}</span>`
-            // supprimerEmployerAssigneDeListNonAssigne(employerList, salleServeurs);
             renderCardsEmplyers(salleServeurs, "salleServeurs");
             nbrEmployersNonAsignes(employerList)
-
       });
 
       document.getElementById("securiteBtn").addEventListener("click",() =>{
             document.getElementById("nbrSecurite").innerHTML = `
             <span class="badge bg-light text-dark"><span id="nbrSecurite" >${salleSecurite.length}</span>/${zoneCapacities.salleSecurite}</span>`
-            // supprimerEmployerAssigneDeListNonAssigne(employerList, salleSecurite);
             renderCardsEmplyers(salleSecurite, "salleSecurite")
             nbrEmployersNonAsignes(employerList)
 
@@ -679,30 +630,18 @@ function remplirToutesZonesExemple() {
       document.getElementById("personnelBtn").addEventListener("click",() =>{
             document.getElementById("nbrPersonnel").innerHTML = `
             <span class="badge bg-light text-dark"><span id="nbrPersonnel" >${sallePersonnel.length}</span>/${zoneCapacities.sallePersonnel}</span>`
-            // supprimerEmployerAssigneDeListNonAssigne(employerList, sallePersonnel);
             renderCardsEmplyers(sallePersonnel, "sallePersonnel")
             nbrEmployersNonAsignes(employerList)
-
       });
 
       document.getElementById("archiveBtn").addEventListener("click",() =>{
             document.getElementById("nbrArchive").innerHTML = `
             <span class="badge bg-light text-dark"><span id="nbrArchive" >${salleArchives.length}</span>/${zoneCapacities.salleArchives}</span>`
-            // supprimerEmployerAssigneDeListNonAssigne(employerList, salleArchives);
             saveDataEmployerToLocalStorage("employers", employerList);
-            // renderCardsEmplyers(employerList,"list-employe");
             renderCardsEmplyers(salleArchives, "salleArchive")
             nbrEmployersNonAsignes(employerList)
 
       });
-
-
-
-      // Affichage ou console pour vérifier
-      console.log("Reception:", reception);
-      console.log("Salle Serveurs:", salleServeurs);
-      console.log("Salle Securite:", salleSecurite);
-      console.log("Salle Conference:", salleConference);
-      console.log("Salle Personnel:", sallePersonnel);
-      console.log("Salle Archives:", salleArchives);
 }
+
+initApp();
